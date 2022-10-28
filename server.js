@@ -2,6 +2,7 @@ const express = require("express"); // Sử dụng framework express
 const { default: mongoose } = require("mongoose");
 const app = express();
 const cors = require("cors");
+const serverless = require("serverless-http");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 //=========================================================================================================================================================
@@ -86,3 +87,6 @@ app.listen(5000, err => {
     if (err) throw err
     console.log(`> Ready on http://localhost:5000`)
   })
+
+module.exports = app;
+module.exports.handler = serverless(app);
