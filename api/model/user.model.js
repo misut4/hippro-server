@@ -3,6 +3,15 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+  username: {
+    type: String,
+  },
+  googleId: {
+    type: String
+  },
+  secret: {
+    type: String
+  },
   password: {
     type: String
   },

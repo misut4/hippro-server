@@ -5,6 +5,13 @@ const cors = require("cors");
 const serverless = require("serverless-http");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = parseInt(process.env.PORT, 10) || 5000
+require("dotenv").config();
+
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const findOrCreate = require("mongoose-findorcreate");
 
 //=========================================================================================================================================================
 //API ROUTES
@@ -12,6 +19,16 @@ const project = require("./api/route/project.route");
 const user = require("./api/route/user.route");
 const appl = require("./api/route/application.route");
 const auth = require("./api/utils/auth");
+
+//=========================================================================================================================================================
+//Google Auth
+app.use(session({
+  secret: "Our little secret.",
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 //=========================================================================================================================================================
 //CONNECT DATABASE
@@ -29,9 +46,48 @@ mongoose.connection.on("error", (err) => {
 //=========================================================================================================================================================
 //SCHEMA MODEL
 require("./api/model/project.model");
-require("./api/model/user.model");
+const userSchema = require("./api/model/user.model");
 require("./api/model/application.model");
 
+userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
+
+passport.use(userSchema.createStrategy());
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+passport.deserializeUser(function(id, done) {
+  userSchema.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:5000/auth/google/callback",
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    userSchema.findOrCreate({ googleId: profile.id, username: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+app.get("/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "http://localhost:5000" }),
+  function(req, res) {
+    // Successful authentication, redirect secrets.
+    res.redirect("http://localhost:5000");
+  }
+);
+
+app.get("/logout", function(req, res){
+  res.redirect("http://localhost:3000/");
+});
 //=========================================================================================================================================================
 //APP/SERVER
 
