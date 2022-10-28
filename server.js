@@ -46,33 +46,11 @@ mongoose.connection.on("error", (err) => {
 //=========================================================================================================================================================
 //SCHEMA MODEL
 require("./api/model/project.model");
-const userSchema = require("./api/model/user.model");
+require("./api/model/user.model");
 require("./api/model/application.model");
 
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
 
-passport.use(userSchema.createStrategy());
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-passport.deserializeUser(function(id, done) {
-  userSchema.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
-passport.use(new GoogleStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/auth/google/callback",
-    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    userSchema.findOrCreate({ googleId: profile.id, username: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
-  }
-));
+
 
 app.get("/auth/google",
   passport.authenticate("google", { scope: ["profile"] })
