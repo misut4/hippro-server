@@ -3,7 +3,8 @@ const { default: mongoose } = require("mongoose");
 const app = express();
 const cors = require("cors");
 const serverless = require("serverless-http");
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware } = require("http-proxy-middleware");
+const port = parseInt(process.env.PORT, 10) || 5000
 
 //=========================================================================================================================================================
 //API ROUTES
@@ -34,11 +35,11 @@ require("./api/model/application.model");
 //=========================================================================================================================================================
 //APP/SERVER
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use(
-    '/api',
+    "/api",
     createProxyMiddleware({
-      target: 'http://localhost:5000',
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );
@@ -78,15 +79,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //route
-app.use('/',auth)
-app.use('/api/prj', project)
-app.use('/api/user', user)
-app.use('/api/appl', appl)
+app.use("/", auth);
+app.use("/api/prj", project);
+app.use("/api/user", user);
+app.use("/api/appl", appl);
 
-app.listen(5000, err => {
-    if (err) throw err
-    console.log(`> Ready on http://localhost:5000`)
-  })
+app.listen(port, (err) => {
+  if (err) throw err;
+  console.log(`> Ready on http://localhost:${port}`);
+});
 
 module.exports = app;
 module.exports.handler = serverless(app);
