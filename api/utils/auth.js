@@ -59,11 +59,10 @@ router.post("/login", async (req, res) => {
   if (!req.body.email) {
     res.json({ success: false, message: "Email was not given" });
   } else {
-    passport.authenticate("local", async function (err, user, info) {
+    // passport.authenticate("local", async function (err, user, info) {
       const savedUser = await User.findOne({ email: req.body.email }).exec()
-      savedUser.toJSON()
       console.log(req.body.email);
-      console.log(savedUser.toJSON());
+      console.log(savedUser);
         if (!savedUser) {
           return res.status(200).json({ msg: "Invaild Email or password", code: 400 , data: savedUser});
         }
@@ -73,21 +72,18 @@ router.post("/login", async (req, res) => {
           const accessToken = jwt.sign({ email: req.body.email }, JWT_SECRET);
           res
             .status(200)
-            .header({
-              Authorization: "Bearer " + accessToken,
-            })
             .json({
               msg: "Login successfully",
               code: 200,
               accessToken,
-              data: savedUser.toJSON(),
+              data: savedUser,
             });
         // } else {
         //   // return res.status(400).json({ error: "Invaild Email or password" });
         //   console.log("invalid");
         // }
     
-    })(req, res);
+    // })(req, res);
   }
 
   // const { email, password } = req.body;
