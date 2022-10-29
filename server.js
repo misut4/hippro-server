@@ -135,7 +135,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //route
-app.use("/", auth);
+app.use("/api", auth);
 app.use("/api/prj", project);
 app.use("/api/user", user);
 app.use("/api/appl", appl);
