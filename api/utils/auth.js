@@ -89,7 +89,6 @@ router.post("/login", async (req, res) => {
   console.log(email);
   const user = await User.findOne({ email: email }).exec();
   console.log(user);
-  console.log(await User.findOne({ email: email }).exec());
   if (!user) {
     return res.status(200).json({ msg: "failed", code: 400 });
   }
