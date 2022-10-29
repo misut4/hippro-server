@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
     res.json({ success: false, message: "Email was not given" });
   } else {
     // passport.authenticate("local", async function (err, user, info) {
-      const savedUser = await User.findOne({ email: req.body.email }).exec()
+      const savedUser = await User.find({email: req.body.email}).exec()
       console.log(req.body.email);
       console.log(savedUser);
         if (!savedUser) {
