@@ -65,7 +65,7 @@ router.post("/login", async (req, res) => {
           res.status(200).json({ msg: "Invaild Email or password", code: 400 });
         }
         // req.body.email === savedUser.email
-        if (await User.findOne({ email: req.body.email }).exec()) {
+        if (!await User.findOne({ email: req.body.email }).exec()) {
           // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
           const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
           res
