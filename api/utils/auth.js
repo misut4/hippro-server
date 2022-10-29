@@ -7,9 +7,7 @@ const User = require("../model/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/key");
-// const requireLogin = require("./requireLogin");
-const { request } = require("express");
-
+const passport = require("passport");
 // router.get('/', (req, res) => {
 //     res.send("hello")
 // })
@@ -18,73 +16,102 @@ const { request } = require("express");
 //   res.send("Hello");
 // });
 
-router.post("/signup", (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    return res
-      .status(200)
-      .json({ msg: "Please add all the fields", code: "400" });
-  }
-  User.findOne({ email: email })
-    .then((savedUser) => {
-      if (savedUser) {
-        return res
-          .status(200)
-          .json({ msg: "user already exists with that email", code: "400" });
+router
+  .post("/register", (req, res) => {
+    User.register(
+      new User({ email: req.body.email, username: req.body.username }),
+      req.body.password,
+      function (err, user) {
+        if (err) {
+          return res.json({
+            success: false,
+            message: "Your account could not be saved. Error: " + err,
+          });
+        } else {
+          req.login(user, (er) => {
+            if (er) {
+              return res.json({ success: false, message: er });
+            } else {
+              return res.json({
+                success: true,
+                message: "Your account has been saved",
+              });
+            }
+          });
+        }
       }
-      //Hash here
-      // bcrypt.hash(password, 12).then((hashedpassword) => {
-      const user = new User({
-        email,
-      });
-      //Save the user to database
-      user.save().then((user) => {
-        res.json({ message: "saved successfully" });
-      });
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-      // });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+    );
 
-router.post("/signin", (req, res) => {
-  const { email, password } = req.body;
-  if (!email) {
-    res.status(200).json({ msg: "please add email or password", code: 400 });
-  }
-  User.findOne({ email: email }).then((savedUser) => {
-    if (!savedUser) {
-      res.status(200).json({ msg: "Invaild Email or password", code: 400 });
-    }
-    // bcrypt
-    //   .compare(password, savedUser.password)
-    //   .then((doMatch) => {
-    if (email === savedUser.email) {
-      // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
-      const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
-      res
-        .status(200)
-        .set({
-          'Authorization': "Bearer " + accessToken,
-        })
-        .json({
-          msg: "Login successfully",
-          code: 200,
-          accessToken,
-          data: savedUser,
-        });
-    } else {
-      res.status(400).json({ error: "Invaild Email or password" });
-    }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
+    const { email } = req.body;
+    const user = new User({
+      email,
+    });
+    //Save the user to database
+    user.save().then((user) => {
+      res.json({ message: "saved successfully" });
+    });
+  })
+  .catch((err) => {
+    console.log(err);
   });
+
+router.post("/login", (req, res) => {
+  if (!req.body.username) {
+    res.json({ success: false, message: "Username was not given" });
+  } else if (!req.body.password) {
+    res.json({ success: false, message: "Password was not given" });
+  } else {
+    passport.authenticate("local", function (err, user, info) {
+      if (err) {
+        res.json({ success: false, message: err });
+      } else {
+        if (!user) {
+          res.json({
+            success: false,
+            message: "username or password incorrect",
+          });
+        } else {
+          const token = jwt.sign(
+            { userId: user._id, username: user.username },
+            JWT_SECRET,
+            { expiresIn: "24h" }
+          );
+          res.json({
+            success: true,
+            message: "Authentication successful",
+            token: token,
+          });
+        }
+      }
+    })(req, res);
+  }
+
+  // const { email, password } = req.body;
+  // if (!email) {
+  //   res.status(200).json({ msg: "please add email or password", code: 400 });
+  // }
+  // User.findOne({ email: email }).then((savedUser) => {
+  //   if (!savedUser) {
+  //     res.status(200).json({ msg: "Invaild Email or password", code: 400 });
+  //   }
+  //   if (email === savedUser.email) {
+  //     // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
+  //     const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
+  //     res
+  //       .status(200)
+  //       .set({
+  //         Authorization: "Bearer " + accessToken,
+  //       })
+  //       .json({
+  //         msg: "Login successfully",
+  //         code: 200,
+  //         accessToken,
+  //         data: savedUser,
+  //       });
+  //   } else {
+  //     res.status(400).json({ error: "Invaild Email or password" });
+  //   }
+  // });
 });
 
 module.exports = router;
