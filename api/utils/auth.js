@@ -62,15 +62,15 @@ router.post("/login", async (req, res) => {
     passport.authenticate("local", async function (err, user, info) {
       const savedUser = await User.findOne({ email: req.body.email }).exec()
         if (!savedUser) {
-          res.status(200).json({ msg: "Invaild Email or password", code: 400 });
+          return res.status(200).json({ msg: "Invaild Email or password", code: 400 });
         }
         // req.body.email === savedUser.email
-        if (!await User.findOne({ email: req.body.email }).exec()) {
+        // if (await User.findOne({ email: req.body.email }).exec()) {
           // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
           const accessToken = jwt.sign({ email: req.body.email }, JWT_SECRET);
           res
             .status(200)
-            .set({
+            .header({
               Authorization: "Bearer " + accessToken,
             })
             .json({
@@ -79,10 +79,10 @@ router.post("/login", async (req, res) => {
               accessToken,
               data: savedUser,
             });
-        } else {
-          // return res.status(400).json({ error: "Invaild Email or password" });
-          console.log("invalid");
-        }
+        // } else {
+        //   // return res.status(400).json({ error: "Invaild Email or password" });
+        //   console.log("invalid");
+        // }
     
     })(req, res);
   }
