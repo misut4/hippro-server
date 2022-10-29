@@ -60,11 +60,11 @@ router.post("/login", async (req, res) => {
     res.json({ success: false, message: "Email was not given" });
   } else {
     passport.authenticate("local", async function (err, user, info) {
-      await User.findOne({ email: req.body.email }).exec()
+      const savedUser = {user: await User.findOne({ email: req.body.email }).exec()}
       console.log(req.body.email);
-      console.log(await User.findOne({ email: req.body.email }).exec());
-        if (!await User.findOne({ email: req.body.email }).exec()) {
-          return res.status(200).json({ msg: "Invaild Email or password", code: 400 });
+      console.log(savedUser);
+        if (!savedUser) {
+          return res.status(200).json({ msg: "Invaild Email or password", code: 400 , data: savedUser});
         }
         // req.body.email === savedUser.email
         // if (await User.findOne({ email: req.body.email }).exec()) {
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
               msg: "Login successfully",
               code: 200,
               accessToken,
-              data: await User.findOne({ email: req.body.email }).exec(),
+              data: savedUser,
             });
         // } else {
         //   // return res.status(400).json({ error: "Invaild Email or password" });
