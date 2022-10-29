@@ -16,75 +16,81 @@ const passport = require("passport");
 //   res.send("Hello");
 // });
 
-router
-  .post("/register", (req, res) => {
-    User.register(
-      new User({ email: req.body.email, username: req.body.username }),
-      req.body.password,
-      function (err, user) {
-        if (err) {
-          return res.json({
-            success: false,
-            message: "Your account could not be saved. Error: " + err,
-          });
-        } else {
-          req.login(user, (er) => {
-            if (er) {
-              return res.json({ success: false, message: er });
-            } else {
-              return res.json({
-                success: true,
-                message: "Your account has been saved",
-              });
-            }
-          });
-        }
+router.post("/register", (req, res) => {
+  User.register(
+    new User({ email: req.body.email, username: req.body.username }),
+    req.body.password,
+    function (err, user) {
+      if (err) {
+        return res.json({
+          success: false,
+          message: "Your account could not be saved. Error: " + err,
+        });
+      } else {
+        req.login(user, (er) => {
+          if (er) {
+            return res.json({ success: false, message: er });
+          } else {
+            return res.json({
+              success: true,
+              message: "Your account has been saved",
+            });
+          }
+        });
       }
-    );
+    }
+  );
 
-    const { email } = req.body;
-    const user = new User({
-      email,
-    });
-    //Save the user to database
-    user.save().then((user) => {
-      res.json({ message: "saved successfully" });
-    });
-  })
-  // .catch((err) => {
-  //   console.log(err);
-  // });
+  const { email } = req.body;
+  const user = new User({
+    email,
+  });
+  //Save the user to database
+  user.save().then((user) => {
+    res.json({ message: "saved successfully" });
+  });
+});
+// .catch((err) => {
+//   console.log(err);
+// });
 
 router.post("/login", async (req, res) => {
-  const email = req.body.email
+  const email = req.body.email;
   if (!email) {
     res.json({ success: false, message: "Email was not given" });
   } else {
     // passport.authenticate("local", async function (err, user, info) {
-      const savedUser = await User.findOne({email: email}).exec()
-      console.log(req.body.email);
-      console.log(savedUser);
+    await User.findOne({ email: email })
+      .exec()
+      .then((savedUser) => {
+        console.log(req.body.email);
+        console.log(savedUser);
         if (!savedUser) {
-          return res.status(200).json({ msg: "Invaild Email or password", code: 400 , data: savedUser});
+          return res
+            .status(200)
+            .json({
+              msg: "Invaild Email or password",
+              code: 400,
+              data: savedUser,
+            });
         }
         // req.body.email === savedUser.email
         // if (await User.findOne({ email: req.body.email }).exec()) {
-          // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
-          const accessToken = jwt.sign({ email: email }, JWT_SECRET);
-          res
-            .status(200)
-            .json({
-              msg: "Login successfully",
-              code: 200,
-              accessToken,
-              data: savedUser,
-            });
+        // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
+        const accessToken = jwt.sign({ email: email }, JWT_SECRET);
+        res.status(200).json({
+          msg: "Login successfully",
+          code: 200,
+          accessToken,
+          data: savedUser,
+        });
         // } else {
         //   // return res.status(400).json({ error: "Invaild Email or password" });
         //   console.log("invalid");
         // }
-    
-    // })(req, res);
+
+        // })(req, res);
+      });
   }
 
   // const { email, password } = req.body;
