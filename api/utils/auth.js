@@ -58,31 +58,32 @@ router
 router.post("/login", (req, res) => {
   if (!req.body.username) {
     res.json({ success: false, message: "Username was not given" });
-  } else if (!req.body.password) {
-    res.json({ success: false, message: "Password was not given" });
+  } else if (!req.body.email) {
+    res.json({ success: false, message: "Email was not given" });
   } else {
     passport.authenticate("local", function (err, user, info) {
-      if (err) {
-        res.json({ success: false, message: err });
-      } else {
-        if (!user) {
-          res.json({
-            success: false,
-            message: "username or password incorrect",
-          });
-        } else {
-          const token = jwt.sign(
-            { userId: user._id, username: user.username },
-            JWT_SECRET,
-            { expiresIn: "24h" }
-          );
-          res.json({
-            success: true,
-            message: "Authentication successful",
-            token: token,
-          });
+      User.findOne({ email: req.body.email }).then((savedUser) => {
+        if (!savedUser) {
+          res.status(200).json({ msg: "Invaild Email or password", code: 400 });
         }
-      }
+        if (req.body.email === savedUser.email) {
+          // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
+          const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
+          res
+            .status(200)
+            .set({
+              Authorization: "Bearer " + accessToken,
+            })
+            .json({
+              msg: "Login successfully",
+              code: 200,
+              accessToken,
+              data: savedUser,
+            });
+        } else {
+          res.status(400).json({ error: "Invaild Email or password" });
+        }
+      });
     })(req, res);
   }
 
