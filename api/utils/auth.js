@@ -56,11 +56,12 @@ router
   // });
 
 router.post("/login", async (req, res) => {
-  if (!req.body.email) {
+  const email = req.body.email
+  if (!email) {
     res.json({ success: false, message: "Email was not given" });
   } else {
     // passport.authenticate("local", async function (err, user, info) {
-      const savedUser = await User.find({email: req.body.email}).exec()
+      const savedUser = await User.findOne({email: email}).exec()
       console.log(req.body.email);
       console.log(savedUser);
         if (!savedUser) {
@@ -69,7 +70,7 @@ router.post("/login", async (req, res) => {
         // req.body.email === savedUser.email
         // if (await User.findOne({ email: req.body.email }).exec()) {
           // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
-          const accessToken = jwt.sign({ email: req.body.email }, JWT_SECRET);
+          const accessToken = jwt.sign({ email: email }, JWT_SECRET);
           res
             .status(200)
             .json({
