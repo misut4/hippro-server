@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
         // req.body.email === savedUser.email
         if (!await User.findOne({ email: req.body.email }).exec()) {
           // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
-          const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
+          const accessToken = jwt.sign({ email: req.body.email }, JWT_SECRET);
           res
             .status(200)
             .set({
