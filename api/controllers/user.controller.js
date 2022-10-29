@@ -17,6 +17,22 @@ async function findbyId(req, res) {
   });
 }
 
+async function findbyEmail(req, res) {
+  const email = req.query.email;
+  console.log(req.query.email);
+  console.log(email);
+  const user = await User.findOne({email: email}).exec()
+  console.log(user);
+  if (!user) {
+    return res.status(200).json({ msg: "failed", code: 400 });
+  }
+  return res.status(200).json({
+    msg: "success",
+    code: 200,
+    data: user
+  });
+}
+
 async function findAll(req, res) {
   User.find().exec()
     .then((user) => {
@@ -103,6 +119,10 @@ const getById = (req, res) => {
   findbyId(req, res);
 };
 
+const getByEmail = (req, res) => {
+  findbyEmail(req, res);
+};
+
 const getAll = (req, res) => {
   findAll(req, res);
 };
@@ -119,6 +139,7 @@ const updateUser = (req, res) => {
 
 module.exports = {
   getById,
+  getByEmail,
   getAll,
   createUser,
   updateUser,
