@@ -80,7 +80,7 @@ router.post("/login", async (req, res) => {
               data: savedUser,
             });
         } else {
-          res.status(400).json({ error: "Invaild Email or password" });
+          return res.status(400).json({ error: "Invaild Email or password" });
         }
     
     })(req, res);
