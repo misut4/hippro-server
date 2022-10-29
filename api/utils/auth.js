@@ -84,48 +84,46 @@ router.post("/login", async (req, res) => {
   //       });
   //     });
 
-      const email = req.query.email;
-    console.log(req.query.email);
-    console.log(email);
-   const user = await User.findOne({email: email}).exec()
-    console.log(user);
-    if (!user) {
-      return res.status(200).json({ msg: "failed", code: 400 });
-    }
-    return res.status(200).json({
-     msg: "success",
-      code: 200,
-      data: user
-   });
-  })
+  const email = req.query.email;
+  console.log(req.query.email);
+  console.log(email);
+  const user = await User.findOne({ email: email }).exec();
+  console.log(user);
+  if (!user) {
+    return res.status(200).json({ msg: "failed", code: 400 });
+  }
+  return res.status(200).json({
+    msg: "success",
+    code: 200,
+    data: user,
+  });
+});
 
-
-  // const { email, password } = req.body;
-  // if (!email) {
-  //   res.status(200).json({ msg: "please add email or password", code: 400 });
-  // }
-  // User.findOne({ email: email }).then((savedUser) => {
-  //   if (!savedUser) {
-  //     res.status(200).json({ msg: "Invaild Email or password", code: 400 });
-  //   }
-  //   if (email === savedUser.email) {
-  //     // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
-  //     const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
-  //     res
-  //       .status(200)
-  //       .set({
-  //         Authorization: "Bearer " + accessToken,
-  //       })
-  //       .json({
-  //         msg: "Login successfully",
-  //         code: 200,
-  //         accessToken,
-  //         data: savedUser,
-  //       });
-  //   } else {
-  //     res.status(400).json({ error: "Invaild Email or password" });
-  //   }
-  // });
-
+// const { email, password } = req.body;
+// if (!email) {
+//   res.status(200).json({ msg: "please add email or password", code: 400 });
+// }
+// User.findOne({ email: email }).then((savedUser) => {
+//   if (!savedUser) {
+//     res.status(200).json({ msg: "Invaild Email or password", code: 400 });
+//   }
+//   if (email === savedUser.email) {
+//     // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
+//     const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
+//     res
+//       .status(200)
+//       .set({
+//         Authorization: "Bearer " + accessToken,
+//       })
+//       .json({
+//         msg: "Login successfully",
+//         code: 200,
+//         accessToken,
+//         data: savedUser,
+//       });
+//   } else {
+//     res.status(400).json({ error: "Invaild Email or password" });
+//   }
+// });
 
 module.exports = router;
