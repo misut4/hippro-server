@@ -55,44 +55,50 @@ router.post("/register", (req, res) => {
 // });
 
 router.post("/login", async (req, res) => {
-  const email = req.body.email;
-  if (!email) {
-    res.json({ success: false, message: "Email was not given" });
-  } else {
-    // passport.authenticate("local", async function (err, user, info) {
-    await User.findOne({ email: email })
-      .exec()
-      .then(async (savedUser) => {
-        console.log(req.body.email);
-        console.log(savedUser);
-        console.log(await User.findOne({ email: email }).exec());
-        if (!savedUser) {
-          return res
-            .status(200)
-            .json({
-              msg: "Invaild Email or password",
-              code: 400,
-              data: savedUser,
-            });
-        }
-        // req.body.email === savedUser.email
-        // if (await User.findOne({ email: req.body.email }).exec()) {
-        // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
-        const accessToken = jwt.sign({ email: email }, JWT_SECRET);
-        res.status(200).json({
-          msg: "Login successfully",
-          code: 200,
-          accessToken,
-          data: savedUser,
-        });
-        // } else {
-        //   // return res.status(400).json({ error: "Invaild Email or password" });
-        //   console.log("invalid");
-        // }
+  // const email = req.body.email;
+  // if (!email) {
+  //   res.json({ success: false, message: "Email was not given" });
+  // } else {
+  //   // passport.authenticate("local", async function (err, user, info) {
+  //   await User.findOne({ email: email })
+  //     .exec()
+  //     .then(async (savedUser) => {
+  //       console.log(req.body.email);
+  //       console.log(savedUser);
+  //       console.log(await User.findOne({ email: email }).exec());
+  //       if (!savedUser) {
+  //         return res
+  //           .status(200)
+  //           .json({
+  //             msg: "Invaild Email or password",
+  //             code: 400,
+  //             data: savedUser,
+  //           });
+  //       }
+  //       const accessToken = jwt.sign({ email: email }, JWT_SECRET);
+  //       res.status(200).json({
+  //         msg: "Login successfully",
+  //         code: 200,
+  //         accessToken,
+  //         data: savedUser,
+  //       });
+  //     });
 
-        // })(req, res);
-      });
-  }
+      const email = req.query.email;
+    console.log(req.query.email);
+    console.log(email);
+   const user = await User.findOne({email: email}).exec()
+    console.log(user);
+    if (!user) {
+      return res.status(200).json({ msg: "failed", code: 400 });
+    }
+    return res.status(200).json({
+     msg: "success",
+      code: 200,
+      data: user
+   });
+  })
+
 
   // const { email, password } = req.body;
   // if (!email) {
@@ -120,6 +126,6 @@ router.post("/login", async (req, res) => {
   //     res.status(400).json({ error: "Invaild Email or password" });
   //   }
   // });
-});
+
 
 module.exports = router;
