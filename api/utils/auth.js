@@ -62,9 +62,10 @@ router.post("/login", async (req, res) => {
     // passport.authenticate("local", async function (err, user, info) {
     await User.findOne({ email: email })
       .exec()
-      .then((savedUser) => {
+      .then(async (savedUser) => {
         console.log(req.body.email);
         console.log(savedUser);
+        console.log(await User.findOne({ email: email }).exec());
         if (!savedUser) {
           return res
             .status(200)
