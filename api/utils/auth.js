@@ -51,9 +51,9 @@ router
       res.json({ message: "saved successfully" });
     });
   })
-  .catch((err) => {
-    console.log(err);
-  });
+  // .catch((err) => {
+  //   console.log(err);
+  // });
 
 router.post("/login", (req, res) => {
   if (!req.body.username) {
