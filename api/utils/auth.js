@@ -84,8 +84,8 @@ router.post("/login", async (req, res) => {
   //       });
   //     });
 
-  const email = req.query.email;
-  console.log(req.query.email);
+  const email = req.body.email;
+  console.log(req.body.email);
   console.log(email);
   const user = await User.findOne({ email: email }).exec();
   console.log(user);
