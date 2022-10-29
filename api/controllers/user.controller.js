@@ -30,6 +30,7 @@ async function createOne(req, res) {
   const name = req.body.name;
   const password = req.body.password;
   const skillset = req.body.skillset;
+  const email = req.body.email
   const uni = req.body.uni;
   const avatar = req.body.avatar;
   const prj_id = req.body.prj_id;
@@ -64,6 +65,7 @@ async function updateOne(req, res) {
   const name = req.body.name;
   const password = req.body.password;
   const skillset = req.body.skillset;
+  const email = req.body.email
   const uni = req.body.uni;
   const avatar = req.body.avatar;
   const prj_id = req.body.prj_id;

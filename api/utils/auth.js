@@ -55,15 +55,16 @@ router
   //   console.log(err);
   // });
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   if (!req.body.email) {
     res.json({ success: false, message: "Email was not given" });
   } else {
-    passport.authenticate("local", function (err, user, info) {
-      User.findOne({ email: req.body.email }).then((savedUser) => {
+    passport.authenticate("local", async function (err, user, info) {
+      const savedUser = await User.findOne({ email: req.body.email }).exec()
         if (!savedUser) {
           res.status(200).json({ msg: "Invaild Email or password", code: 400 });
         }
+        console.log(savedUser);
         if (req.body.email === savedUser.email) {
           // res.json({ message: "successfully signed, welcome " + savedUser.name + "!" })
           const accessToken = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
@@ -81,7 +82,7 @@ router.post("/login", (req, res) => {
         } else {
           res.status(400).json({ error: "Invaild Email or password" });
         }
-      });
+    
     })(req, res);
   }
 
