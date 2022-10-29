@@ -61,9 +61,10 @@ router.post("/login", async (req, res) => {
   } else {
     passport.authenticate("local", async function (err, user, info) {
       const savedUser = await User.findOne({ email: req.body.email }).exec()
+      console.log(req.body.email);
       console.log(savedUser);
         if (!savedUser) {
-          return res.status(200).json({ msg: "Invaild Email or password", code: 400 });
+          return res.status(200).json({ msg: "Invaild Email or password", code: 400 , data: savedUser});
         }
         // req.body.email === savedUser.email
         // if (await User.findOne({ email: req.body.email }).exec()) {
