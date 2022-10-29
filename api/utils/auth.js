@@ -56,9 +56,7 @@ router
   // });
 
 router.post("/login", (req, res) => {
-  if (!req.body.username) {
-    res.json({ success: false, message: "Username was not given" });
-  } else if (!req.body.email) {
+  if (!req.body.email) {
     res.json({ success: false, message: "Email was not given" });
   } else {
     passport.authenticate("local", function (err, user, info) {
