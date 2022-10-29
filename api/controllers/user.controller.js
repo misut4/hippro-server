@@ -13,6 +13,7 @@ async function findbyId(req, res) {
   return res.status(200).json({
     msg: "success",
     code: 200,
+    data: user
   });
 }
 
