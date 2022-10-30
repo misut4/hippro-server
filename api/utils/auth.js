@@ -66,7 +66,8 @@ router.post("/login", async (req, res) => {
         console.log(req.body.email);
         console.log(savedUser);
         if (!savedUser) {
-          (await User.create({email: email})).save()
+          savedUser = await User({email: email})
+          savedUser.save()
         }
         const accessToken = jwt.sign({ email: email }, JWT_SECRET);
         res.status(200).json({
