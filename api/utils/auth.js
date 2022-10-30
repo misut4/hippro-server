@@ -66,13 +66,7 @@ router.post("/login", async (req, res) => {
         console.log(req.body.email);
         console.log(savedUser);
         if (!savedUser) {
-          return res
-            .status(200)
-            .json({
-              msg: "Invaild Email or password",
-              code: 400,
-              data: savedUser,
-            });
+          (await User.create({email: email})).save()
         }
         const accessToken = jwt.sign({ email: email }, JWT_SECRET);
         res.status(200).json({
@@ -82,8 +76,8 @@ router.post("/login", async (req, res) => {
           data: savedUser,
         });
       });
-}
-})
+  }
+});
 
 // const { email, password } = req.body;
 // if (!email) {
