@@ -43,8 +43,8 @@ async function createOne(req, res) {
   const uni = req.body.uni;
   const description = req.body.description;
  
-  console.log("name");
-  console.log("location");
+  console.log(name);
+  console.log(location);
   const project = new Project({
     //key and value are the same so only need to type one
     name,
