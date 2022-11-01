@@ -36,22 +36,22 @@ async function findAll(req, res) {
 async function createOne(req, res) {
   const name = req.body.data.name;
   const location = req.body.data.location;
-  const postDate = req.body.data.post_date;
-  const endDate = req.body.data.end_date;
+  const startDate = req.body.data.startDate;
+  const endDate = req.body.data.endDate;
   const shortDesc = req.body.data.shortDesc;
   const field = req.body.data.field;
   const uni = req.body.data.uni;
   const userID = req.body.data.userID;
   const desc = req.body.data.desc;
 
-  console.log(postDate);
+  console.log(startDate);
   console.log(endDate);
  
   const project = new Project({
     //key and value are the same so only need to type one
     name,
     location,
-    postDate,
+    startDate,
     endDate,
     shortDesc,
     field,
@@ -74,8 +74,8 @@ async function updateOne(req, res) {
   const _id = req.body._id;
   const name = req.body.name;
   const location = req.body.location;
-  const post_date = req.body.post_date;
-  const end_date = req.body.end_date;
+  const startDate = req.body.post_date;
+  const endDate = req.body.end_date;
   const shortDesc = req.body.shortDesc;
   const field = req.body.field;
   const uni = req.body.uni;
@@ -90,8 +90,8 @@ async function updateOne(req, res) {
     //key and value are the same so only need to type one
     name,
     location,
-    post_date,
-    end_date,
+    startDate,
+    endDate,
     shortDesc,
     field,
     uni,

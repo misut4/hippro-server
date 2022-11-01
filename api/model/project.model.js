@@ -6,7 +6,7 @@ const projectSchema = new mongoose.Schema({
   location: {
     type: String,
   },
-  postDate: {
+  startDate: {
     type: Date,
   },
   endDate: {
