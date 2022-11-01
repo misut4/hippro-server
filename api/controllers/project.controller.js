@@ -34,7 +34,6 @@ async function findAll(req, res) {
 }
 
 async function createOne(req, res) {
-  const _id = req.body._id;
   const name = req.body.name;
   const location = req.body.location;
   const post_date = req.body.post_date;
@@ -43,11 +42,9 @@ async function createOne(req, res) {
   const field = req.body.field;
   const uni = req.body.uni;
   const description = req.body.description;
-  // if (!email || !username || !password) {
-  //     res.status(422).json({ error: "Please add all the fields" })
-  // }
-  //make password not show on database
-  // req.user.password = undefined
+ 
+  console.log("name");
+  console.log("location");
   const project = new Project({
     //key and value are the same so only need to type one
     name,

@@ -64,7 +64,6 @@ router.post("/login", async (req, res, next) => {
       .exec()
       .then(async (savedUser) => {
         console.log(req.body.email);
-        console.log(savedUser);
         if (!savedUser) {
           savedUser = await User({email: email})
           savedUser.save()
@@ -79,7 +78,6 @@ router.post("/login", async (req, res, next) => {
           console.log(_id);
           await User.findById(_id).exec().then((userdata) => {
             req.user = userdata;
-            console.log(userdata);
             next();
           });
           //continue to next middleware
