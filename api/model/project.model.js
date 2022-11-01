@@ -16,7 +16,7 @@ const projectSchema = new mongoose.Schema({
     type: String,
   },
   field: {
-    type: String,
+    type: Array,
   },
   uni:{
     type: String

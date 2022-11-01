@@ -62,6 +62,7 @@ async function createOne(req, res) {
   project
     .save()
     .then((result) => {
+      console.log("created");
       return res.json(result);
     })
     .catch((err) => {
