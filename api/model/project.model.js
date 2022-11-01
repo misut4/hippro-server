@@ -24,10 +24,10 @@ const projectSchema = new mongoose.Schema({
   amount: {
     type: String,
   },
-  description: {
+  desc: {
     type: String,
   },
-  userId: {
+  userID: {
     type: String
   }
 });

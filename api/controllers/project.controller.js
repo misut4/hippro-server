@@ -36,26 +36,25 @@ async function findAll(req, res) {
 async function createOne(req, res) {
   const name = req.body.data.name;
   const location = req.body.data.location;
-  const post_date = req.body.post_date;
-  const end_date = req.body.end_date;
-  const shortDesc = req.body.shortDesc;
-  const field = req.body.field;
-  const uni = req.body.uni;
-  const description = req.body.description;
+  const postDate = req.body.data.post_date;
+  const endDate = req.body.data.end_date;
+  const shortDesc = req.body.data.shortDesc;
+  const field = req.body.data.field;
+  const uni = req.body.data.uni;
+  const userID = req.body.data.userID;
+  const desc = req.body.data.desc;
  
-  console.log(name);
-  console.log(location);
-  console.log(req.body.data);
   const project = new Project({
     //key and value are the same so only need to type one
     name,
     location,
-    post_date,
-    end_date,
+    postDate,
+    endDate,
     shortDesc,
     field,
     uni,
-    description,
+    userID,
+    desc,
   });
   project
     .save()
@@ -77,7 +76,7 @@ async function updateOne(req, res) {
   const shortDesc = req.body.shortDesc;
   const field = req.body.field;
   const uni = req.body.uni;
-  const description = req.body.description;
+  const desc = req.body.desc;
 
   if (!Project.findById(_id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
@@ -93,7 +92,7 @@ async function updateOne(req, res) {
     shortDesc,
     field,
     uni,
-    description,
+    desc,
   });
   project
     .update(_id)
