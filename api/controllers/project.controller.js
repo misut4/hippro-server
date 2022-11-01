@@ -34,8 +34,8 @@ async function findAll(req, res) {
 }
 
 async function createOne(req, res) {
-  const name = req.body.name;
-  const location = req.body.location;
+  const name = req.body.data.name;
+  const location = req.body.data.location;
   const post_date = req.body.post_date;
   const end_date = req.body.end_date;
   const shortDesc = req.body.shortDesc;
