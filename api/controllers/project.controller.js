@@ -78,7 +78,7 @@ async function updateOne(req, res) {
   const startDate = req.body.post_date;
   const endDate = req.body.end_date;
   const shortDesc = req.body.shortDesc;
-  const field = req.body.field;
+  const field = req.body.inputFields;
   const uni = req.body.uni;
   const desc = req.body.desc;
   const applications = req.body.data.applications
