@@ -6,10 +6,10 @@ const projectSchema = new mongoose.Schema({
   location: {
     type: String,
   },
-  post_date: {
+  postDate: {
     type: Date,
   },
-  end_date: {
+  endDate: {
     type: Date,
   },
   shortDesc: {

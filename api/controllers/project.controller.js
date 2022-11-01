@@ -43,6 +43,9 @@ async function createOne(req, res) {
   const uni = req.body.data.uni;
   const userID = req.body.data.userID;
   const desc = req.body.data.desc;
+
+  console.log(postDate);
+  console.log(endDate);
  
   const project = new Project({
     //key and value are the same so only need to type one
