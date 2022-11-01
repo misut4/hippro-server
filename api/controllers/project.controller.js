@@ -34,18 +34,15 @@ async function findAll(req, res) {
 }
 
 async function createOne(req, res) {
+  const _id = req.body._id;
   const name = req.body.name;
   const location = req.body.location;
   const post_date = req.body.post_date;
   const end_date = req.body.end_date;
-  const skill = req.body.skill;
+  const shortDesc = req.body.shortDesc;
   const field = req.body.field;
-  const criteria = req.body.criteria;
   const uni = req.body.uni;
-  const amount = req.body.amount;
   const description = req.body.description;
-  const category = req.body.category;
-
   // if (!email || !username || !password) {
   //     res.status(422).json({ error: "Please add all the fields" })
   // }
@@ -57,13 +54,10 @@ async function createOne(req, res) {
     location,
     post_date,
     end_date,
-    skill,
+    shortDesc,
     field,
-    criteria,
     uni,
-    amount,
     description,
-    category,
   });
   project
     .save()
@@ -81,13 +75,10 @@ async function updateOne(req, res) {
   const location = req.body.location;
   const post_date = req.body.post_date;
   const end_date = req.body.end_date;
-  const skill = req.body.skill;
+  const shortDesc = req.body.shortDesc;
   const field = req.body.field;
-  const criteria = req.body.criteria;
   const uni = req.body.uni;
-  const amount = req.body.amount;
   const description = req.body.description;
-  const category = req.body.category;
 
   if (!Project.findById(_id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
@@ -100,13 +91,10 @@ async function updateOne(req, res) {
     location,
     post_date,
     end_date,
-    skill,
+    shortDesc,
     field,
-    criteria,
     uni,
-    amount,
     description,
-    category,
   });
   project
     .update(_id)

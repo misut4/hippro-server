@@ -6,8 +6,8 @@ async function findbyId(req, res) {
   console.log(req.query.id);
   console.log(id);
   const application = await Application.findById(id).exec()
-  console.log(project);
-  if (!project) {
+  console.log(application);
+  if (!application) {
     return res.status(200).json({ msg: "failed", code: 400 });
   }
   return res.status(200).json({
@@ -18,8 +18,8 @@ async function findbyId(req, res) {
 
 async function findAll(req, res) {
   Application.find().exec()
-    .then((project) => {
-      return res.json(project);
+    .then((application) => {
+      return res.json(application);
     })
     .catch((err) => {
       console.log(err);
@@ -27,16 +27,23 @@ async function findAll(req, res) {
 }
 
 async function createOne(req, res) {
-  
+  const prjId = req.body.prjId
+  const applicantId = req.body.applicantId
+  const prjName = req.body.prjName
+  const userField = req.body.userField
+  const prjField = req.body.prjField
+  const userUni = req.body.userUni
+  const prjDescription = req.body.prjDescription
 
-  // if (!email || !username || !password) {
-  //     res.status(422).json({ error: "Please add all the fields" })
-  // }
-  //make password not show on database
-  // req.user.password = undefined
+
   const application = new Application({
-    //key and value are the same so only need to type one
-    
+    prjId,
+    applicantId,
+    prjName,
+    userField,
+    prjField,
+    userUni,
+    prjDescription
   });
   application
     .save()
@@ -49,16 +56,27 @@ async function createOne(req, res) {
 }
 
 async function updateOne(req, res) {
-  
+  const _id = req.body._id
+  const prjId = req.body.prjId
+  const applicantId = req.body.applicantId
+  const prjName = req.body.prjName
+  const userField = req.body.userField
+  const prjField = req.body.prjField
+  const userUni = req.body.userUni
+  const prjDescription = req.body.prjDescription
 
   if (!Application.findById(_id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  // req.user.password = undefined
   const application = new Application({
-    //key and value are the same so only need to type one
-    
+    prjId,
+    applicantId,
+    prjName,
+    userField,
+    prjField,
+    userUni,
+    prjDescription
   });
   application
     .update()
@@ -73,11 +91,11 @@ async function updateOne(req, res) {
 async function deleteOne(req, res) {
   const id = req.body.id;
 
-  if (!Project.findById(id)) {
+  if (!Application.findById(id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  Project.deleteOne({
+  Application.deleteOne({
     _id: id,
   }).exec();
 

@@ -54,7 +54,7 @@ router.post("/register", (req, res) => {
 //   console.log(err);
 // });
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
   const email = req.body.email;
   if (!email) {
     res.json({ success: false, message: "Email was not given" });
@@ -70,6 +70,20 @@ router.post("/login", async (req, res) => {
           savedUser.save()
         }
         const accessToken = jwt.sign({ email: email }, JWT_SECRET);
+        jwt.verify(accessToken, JWT_SECRET, async (err, payload) => {
+          if (err) {
+            return res.staus(200).json({msg: "you must be logged in", code: 400 });
+            // return res.status(200)
+          }
+          const { _id } = savedUser._id;
+          console.log(_id);
+          await User.findById(_id).exec().then((userdata) => {
+            req.user = userdata;
+            console.log(userdata);
+            next();
+          });
+          //continue to next middleware
+        });
         res.status(200).json({
           msg: "Login successfully",
           code: 200,

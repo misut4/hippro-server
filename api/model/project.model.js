@@ -12,14 +12,11 @@ const projectSchema = new mongoose.Schema({
   end_date: {
     type: Date,
   },
-  skill: {
+  shortDesc: {
     type: String,
   },
   field: {
     type: String,
-  },
-  criteria: {
-    type: Array,
   },
   uni:{
     type: String
@@ -29,9 +26,6 @@ const projectSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-  },
-  category: {
-    type: Array,
   },
   userId: {
     type: String
