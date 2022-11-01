@@ -29,7 +29,14 @@ const projectSchema = new mongoose.Schema({
   },
   userID: {
     type: String
+  },
+  application: {
+    type: String
+  },
+  participants: {
+    type: String
   }
+
 });
 
 module.exports = mongoose.model("Project", projectSchema);

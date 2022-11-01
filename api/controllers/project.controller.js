@@ -43,10 +43,9 @@ async function createOne(req, res) {
   const uni = req.body.data.uni;
   const userID = req.body.data.userID;
   const desc = req.body.data.desc;
+  const applications = req.body.data.applications
+  const participants = req.body.data.participants
 
-  console.log(startDate);
-  console.log(endDate);
- 
   const project = new Project({
     //key and value are the same so only need to type one
     name,
@@ -58,6 +57,8 @@ async function createOne(req, res) {
     uni,
     userID,
     desc,
+    applications,
+    participants
   });
   project
     .save()
@@ -80,6 +81,8 @@ async function updateOne(req, res) {
   const field = req.body.field;
   const uni = req.body.uni;
   const desc = req.body.desc;
+  const applications = req.body.data.applications
+  const participants = req.body.data.participants
 
   if (!Project.findById(_id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
@@ -96,6 +99,8 @@ async function updateOne(req, res) {
     field,
     uni,
     desc,
+    applications,
+    participants
   });
   project
     .update(_id)
