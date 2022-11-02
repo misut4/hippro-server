@@ -31,10 +31,10 @@ const projectSchema = new mongoose.Schema({
     type: String
   },
   application: {
-    type: String
+    type: Array
   },
   participants: {
-    type: String
+    type: Array
   }
 
 });
