@@ -48,14 +48,15 @@ async function createOne(req, res) {
     prjDescription
   });
   const project = await Project.findByIdAndUpdate(prjId, {application: application}).exec()
-  application
-    .save()
-    .then((result) => {
-      return res.json(result, project);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  // application
+  //   .save()
+  //   .then((result) => {
+  //     return res.json(result, project);
+  //   })
+    console.log("application created");
+//     .catch((err) => {
+//       console.log(err);
+//     });
 }
 
 async function updateOne(req, res) {
