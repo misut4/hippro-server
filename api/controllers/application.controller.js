@@ -1,4 +1,6 @@
 const Application = require("../model/application.model");
+const Project = require("../model/project.model");
+
 
 //DEDICATED FUNCTIONS=========================================================
 async function findbyId(req, res) {
@@ -35,7 +37,7 @@ async function createOne(req, res) {
   const userUni = req.body.userUni
   const prjDescription = req.body.prjDescription
 
-
+  
   const application = new Application({
     prjId,
     applicantId,
@@ -45,10 +47,11 @@ async function createOne(req, res) {
     userUni,
     prjDescription
   });
+  const project = await Project.findByIdAndUpdate(prjId, {application: application}).exec()
   application
     .save()
     .then((result) => {
-      return res.json(result);
+      return res.json(result, project);
     })
     .catch((err) => {
       console.log(err);
