@@ -4,6 +4,7 @@ const router = express.Router()
 const {
     getById,
     getAll,
+    search,
     createPrj,
     updatePrj,
     deletePrj
@@ -12,6 +13,8 @@ const {
 router.get('/getbyid', getById)
 
 router.get('/getallprj', getAll)
+
+router.get('/seach', search)
 
 router.post('/create', createPrj)
 

@@ -15,10 +15,21 @@ async function findbyId(req, res) {
   });
 }
 
+async function findByName(req, res) {
+  const searchString = req.body.name;
+  console.log(searchString);
+  const project = await Project.find({ name: { $regex: /^searchString/ } });
+  console.log(project);
+  if (!project) {
+    return res.status(200).json({ msg: "failed", code: 400 });
+  }
+  return res.status(200).json(project);
+}
+
 async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
-    limit: parseInt(req.query.limit, 10) || 100
+    limit: parseInt(req.query.limit, 10) || 1000,
   };
 
   Project.find()
@@ -43,8 +54,8 @@ async function createOne(req, res) {
   const uni = req.body.data.uni;
   const userID = req.body.data.userID;
   const desc = req.body.data.desc;
-  const applications = req.body.data.applications
-  const participants = req.body.data.participants
+  const applications = req.body.data.applications;
+  const participants = req.body.data.participants;
 
   const project = new Project({
     //key and value are the same so only need to type one
@@ -58,7 +69,7 @@ async function createOne(req, res) {
     userID,
     desc,
     applications,
-    participants
+    participants,
   });
   project
     .save()
@@ -81,8 +92,8 @@ async function updateOne(req, res) {
   const field = req.body.inputFields;
   const uni = req.body.uni;
   const desc = req.body.desc;
-  const applications = req.body.data.applications
-  const participants = req.body.data.participants
+  const applications = req.body.data.applications;
+  const participants = req.body.data.participants;
 
   if (!Project.findById(_id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
@@ -100,7 +111,7 @@ async function updateOne(req, res) {
     uni,
     desc,
     applications,
-    participants
+    participants,
   });
   project
     .update(_id)
@@ -141,6 +152,10 @@ const getAll = (req, res) => {
   findAll(req, res);
   console.log("here");
 };
+
+const search = (req, res) => {
+  findByName(req, res);
+};
 //REST API POST=================================================
 const createPrj = (req, res) => {
   createOne(req, res);
@@ -157,6 +172,7 @@ const deletePrj = (req, res) => {
 module.exports = {
   getById,
   getAll,
+  search,
   createPrj,
   updatePrj,
   deletePrj,

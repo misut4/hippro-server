@@ -105,27 +105,24 @@ async function acceptOne(req, res) {
   const userId = req.body.userId;
   const status = req.body.status;
 
+  console.log(status);
+  const application = await Application.findByIdAndUpdate(applicationId, {
+    status: status,
+  }).exec();
+
+  await application.save();
+
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
   const userEmail = await User.findById(userId).select("email").exec();
   const project = Project.findById(projectId);
-  project.updateOne({ $push: { participants: userEmail } });
+  await project.updateOne({ $push: { participants: userEmail } });
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
-  const application = await Application.findByIdAndUpdate(applicationId, {
-    status: status,
-  })
-    .exec()
-    .then((result) => {
-      console.log("accepted");
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  return res.status(200).json(application);
 }
 
 async function rejectOne(req, res) {
