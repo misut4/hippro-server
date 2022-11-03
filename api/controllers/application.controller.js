@@ -53,7 +53,7 @@ async function createOne(req, res) {
   const userUni = req.body.userUni;
   const prjDescription = req.body.prjDescription;
   
-  const role = req.body.data.projectRole
+  const role = req.body.data.role
   const status = req.body.data.status
 
   const application = new Application({
