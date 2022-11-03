@@ -5,6 +5,7 @@ const {
     getById,
     getAll,
     getAllbyUser,
+    getAllReceived,
     createApplication,
     deleteApplication
 } = require('../controllers/application.controller')
@@ -14,6 +15,8 @@ router.get('/getbyid', getById)
 router.get('/getall', getAll)
 
 router.get('/getallappl', getAllbyUser)
+
+router.get('/getallrc', getAllReceived)
 
 router.post('/create', createApplication)
 

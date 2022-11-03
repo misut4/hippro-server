@@ -31,10 +31,29 @@ async function findAll(req, res) {
 async function findAllbelongToUser(req, res) {
   const userId = req.query.userId
   console.log(userId);
-  Application.find({applicantId: userId})
+  await Application.find({applicantId: userId})
     .exec()
     .then((application) => {
       return res.status(200).json(application);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function findAllReceived(req, res) {
+  const userId = req.query.userId;
+  const project = await Project.find({userID: userId}).exec()
+  // project.forEach(async project => {
+  //   console.log(project._id.toString());
+  // });
+
+  var result = project.map(a => a._id);
+
+  await Application.find({prjId: result})
+    .exec()
+    .then((application) => {
+      return res.json(application);
     })
     .catch((err) => {
       console.log(err);
@@ -139,12 +158,17 @@ const getById = (req, res) => {
 
 const getAll = (req, res) => {
   findAll(req, res);
-  console.log("here");
+  console.log("got all appl");
 };
 
 const getAllbyUser = (req, res) => {
   findAllbelongToUser(req, res)
-  console.log("here");
+  console.log("got all appl from user");
+};
+
+const getAllReceived = (req, res) => {
+  findAllReceived(req, res);
+  console.log("got all appl from others");
 };
 
 //REST API POST=================================================
@@ -164,6 +188,7 @@ module.exports = {
   getById,
   getAll,
   getAllbyUser,
+  getAllReceived,
   createApplication,
   deleteApplication,
 };
