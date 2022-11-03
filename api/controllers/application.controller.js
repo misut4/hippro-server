@@ -129,20 +129,20 @@ async function acceptOne(req, res) {
 }
 
 async function rejectOne(req, res) {
-  const id = req.body.applicantId;
+  const applicationId = req.body.applicantId;
   const status = req.body.status;
 
-  if (!Application.findById(id)) {
+  if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  const application = new Application({
-    status,
-  });
-  application
-    .update()
+  const application = await Application.findByIdAndUpdate(applicationId, {
+    status: status,
+  })
+    .exec()
     .then((result) => {
-      return res.json(result);
+      console.log("rejected");
+      return res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
