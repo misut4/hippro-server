@@ -7,7 +7,9 @@ const {
     getAllbyUser,
     getAllReceived,
     createApplication,
-    deleteApplication
+    acceptApplication,
+    deleteApplication,
+    rejectApplication
 } = require('../controllers/application.controller')
 
 router.get('/getbyid', getById)
@@ -19,6 +21,10 @@ router.get('/getallappl', getAllbyUser)
 router.get('/getallrc', getAllReceived)
 
 router.post('/create', createApplication)
+
+router.put('/accept', acceptApplication)
+
+router.put('/reject', rejectApplication)
 
 router.delete('/delete', deleteApplication)
 

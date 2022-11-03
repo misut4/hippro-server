@@ -1,5 +1,6 @@
 const Application = require("../model/application.model");
 const Project = require("../model/project.model");
+const User = require("../model/user.model");
 
 //DEDICATED FUNCTIONS=========================================================
 async function findbyId(req, res) {
@@ -18,7 +19,7 @@ async function findbyId(req, res) {
 }
 
 async function findAll(req, res) {
-  Application.find()
+  await Application.find({status: {$ne: "Rejected"}})
     .exec()
     .then((application) => {
       return res.json(application);
@@ -29,9 +30,9 @@ async function findAll(req, res) {
 }
 
 async function findAllbelongToUser(req, res) {
-  const userId = req.query.userId
+  const userId = req.query.userId;
   console.log(userId);
-  await Application.find({applicantId: userId})
+  await Application.find({ applicantId: userId })
     .exec()
     .then((application) => {
       return res.status(200).json(application);
@@ -43,14 +44,14 @@ async function findAllbelongToUser(req, res) {
 
 async function findAllReceived(req, res) {
   const userId = req.query.userId;
-  const project = await Project.find({userID: userId}).exec()
+  const project = await Project.find({ userID: userId }).exec();
   // project.forEach(async project => {
   //   console.log(project._id.toString());
   // });
 
-  var result = project.map(a => a._id);
+  var result = project.map((a) => a._id);
 
-  await Application.find({prjId: result})
+  await Application.find({ prjId: result })
     .exec()
     .then((application) => {
       return res.json(application);
@@ -60,20 +61,19 @@ async function findAllReceived(req, res) {
     });
 }
 
-
 async function createOne(req, res) {
   const prjId = req.body.data.projectId;
   const project = await Project.findById(prjId).exec();
-  
+
   const applicantId = req.body.data.userID;
   const prjName = project.name;
   const userField = req.body.userField;
   const prjField = req.body.prjField;
   const userUni = req.body.userUni;
   const prjDescription = req.body.prjDescription;
-  
-  const role = req.body.data.role
-  const status = req.body.data.status
+
+  const role = req.body.data.role;
+  const status = req.body.data.status;
 
   const application = new Application({
     prjId,
@@ -84,7 +84,7 @@ async function createOne(req, res) {
     userUni,
     prjDescription,
     role,
-    status
+    status,
   });
   await Project.findByIdAndUpdate(prjId, {
     application: application,
@@ -99,28 +99,25 @@ async function createOne(req, res) {
     });
 }
 
-async function updateOne(req, res) {
-  const _id = req.body._id;
-  const prjId = req.body.prjId;
-  const applicantId = req.body.applicantId;
-  const prjName = req.body.prjName;
-  const userField = req.body.userField;
-  const prjField = req.body.prjField;
-  const userUni = req.body.userUni;
-  const prjDescription = req.body.prjDescription;
+async function acceptOne(req, res) {
+  const applicationId = req.body.applicationId;
+  const projectId = req.body.projectId;
+  const userId = req.body.userId;
+  const status = req.body.status;
 
-  if (!Application.findById(_id)) {
+  if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
+  const user = await Project.findById(userId).exec()
+  const project = await Project.findById(projectId).exec()
+
+  project.participants.push(user.email)
+  
+  // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
+
   const application = new Application({
-    prjId,
-    applicantId,
-    prjName,
-    userField,
-    prjField,
-    userUni,
-    prjDescription,
+    status,
   });
   application
     .update()
@@ -131,6 +128,28 @@ async function updateOne(req, res) {
       console.log(err);
     });
 }
+
+async function rejectOne(req, res) {
+  const id = req.body.applicantId;
+  const status = req.body.status;
+
+  if (!Application.findById(id)) {
+    return res.status(200).json({ msg: "id not found", code: 400 });
+  }
+
+  const application = new Application({
+    status,
+  });
+  application
+    .update()
+    .then((result) => {
+      return res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 
 async function deleteOne(req, res) {
   const id = req.body.id;
@@ -149,6 +168,7 @@ async function deleteOne(req, res) {
   });
 }
 
+
 //=====================================================================================
 
 //REST API GET=================================================
@@ -162,7 +182,7 @@ const getAll = (req, res) => {
 };
 
 const getAllbyUser = (req, res) => {
-  findAllbelongToUser(req, res)
+  findAllbelongToUser(req, res);
   console.log("got all appl from user");
 };
 
@@ -176,13 +196,18 @@ const createApplication = (req, res) => {
   createOne(req, res);
 };
 //REST API PUT=================================================
-// const updatePrj = (req, res) => {
-//   updateOne(req, res);
-// };
+const acceptApplication = (req, res) => {
+  acceptOne(req, res);
+};
+
+const rejectApplication = (req, res) => {
+  rejectOne(req, res);
+};
 //REST API DELETE=================================================
 const deleteApplication = (req, res) => {
   deleteOne(req, res);
 };
+
 
 module.exports = {
   getById,
@@ -190,5 +215,7 @@ module.exports = {
   getAllbyUser,
   getAllReceived,
   createApplication,
+  acceptApplication,
   deleteApplication,
+  rejectApplication,
 };
