@@ -29,16 +29,16 @@ async function findAll(req, res) {
 }
 
 async function createOne(req, res) {
-  const prjId = req.body.data.projectjId;
-  const applicantId = req.body.data.userID;
-  const prjName = req.body.prjName;
-  const userField = req.body.userField;
-  const prjField = req.body.prjField;
-  const userUni = req.body.userUni;
-  const prjDescription = req.body.prjDescription;
+  const prjId = await req.body.data.projectjId;
+  const applicantId = await req.body.data.userID;
+  const prjName = await req.body.prjName;
+  const userField = await req.body.userField;
+  const prjField = await req.body.prjField;
+  const userUni = await req.body.userUni;
+  const prjDescription = await req.body.prjDescription;
 
-  const role = req.body.data.projectRole
-  const status = req.body.data.status
+  const role = await req.body.data.projectRole
+  const status = await req.body.data.status
 
   const application = new Application({
     prjId,
