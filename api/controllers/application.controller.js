@@ -29,7 +29,8 @@ async function findAll(req, res) {
 }
 
 async function findAllbelongToUser(req, res) {
-  const userId = req.query.userID
+  const userId = req.query.userId
+  console.log(userId);
   Application.find({applicantId: userId})
     .exec()
     .then((application) => {
