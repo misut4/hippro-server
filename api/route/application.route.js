@@ -4,13 +4,16 @@ const router = express.Router()
 const {
     getById,
     getAll,
+    getAllbyUser,
     createApplication,
     deleteApplication
 } = require('../controllers/application.controller')
 
 router.get('/getbyid', getById)
 
-router.get('/getallprj', getAll)
+router.get('/getall', getAll)
+
+router.get('/getallappl', getAllbyUser)
 
 router.post('/create', createApplication)
 

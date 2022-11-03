@@ -28,6 +28,19 @@ async function findAll(req, res) {
     });
 }
 
+async function findAllbelongToUser(req, res) {
+  const userId = req.body.data.userID
+  Application.find({applicantId: userId})
+    .exec()
+    .then((application) => {
+      return res.status(200).json(application);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+
 async function createOne(req, res) {
   const prjId = req.body.data.projectId;
   const applicantId = req.body.data.userID;
@@ -125,6 +138,12 @@ const getAll = (req, res) => {
   findAll(req, res);
   console.log("here");
 };
+
+const getAllbyUser = (req, res) => {
+  findAllbelongToUser(req, res)
+  console.log("here");
+};
+
 //REST API POST=================================================
 const createApplication = (req, res) => {
   createOne(req, res);
@@ -141,6 +160,7 @@ const deleteApplication = (req, res) => {
 module.exports = {
   getById,
   getAll,
+  getAllbyUser,
   createApplication,
   deleteApplication,
 };
