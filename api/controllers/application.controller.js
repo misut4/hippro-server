@@ -109,9 +109,9 @@ async function acceptOne(req, res) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  const userEmail = await User.findById(userId).select('email')
-  const project = await Project.findByIdAndUpdate(projectId, {$push: {participants: userEmail}}).exec()
-  
+  const userEmail = await User.findById(userId).select('email').exec()
+  const project = Project.updateOne(projectId, {$push: {participants: userEmail}}).exec()
+
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
   const application = new Application({
