@@ -43,13 +43,15 @@ async function findAllbelongToUser(req, res) {
 
 async function createOne(req, res) {
   const prjId = req.body.data.projectId;
+  const project = await Project.findById(prjId).exec();
+  
   const applicantId = req.body.data.userID;
-  const prjName = req.body.prjName;
+  const prjName = project.name;
   const userField = req.body.userField;
   const prjField = req.body.prjField;
   const userUni = req.body.userUni;
   const prjDescription = req.body.prjDescription;
-
+  
   const role = req.body.data.projectRole
   const status = req.body.data.status
 
@@ -64,7 +66,7 @@ async function createOne(req, res) {
     role,
     status
   });
-  const project = await Project.findByIdAndUpdate(prjId, {
+  await Project.findByIdAndUpdate(prjId, {
     application: application,
   }).exec();
   await application
