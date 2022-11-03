@@ -29,8 +29,8 @@ async function findAll(req, res) {
 }
 
 async function findAllbelongToUser(req, res) {
-  const userId = req.body.data.userID;
-  Application.find({ applicantId: userId })
+  const userId = req.query.userID
+  Application.find({applicantId: userId})
     .exec()
     .then((application) => {
       return res.status(200).json(application);
@@ -40,19 +40,20 @@ async function findAllbelongToUser(req, res) {
     });
 }
 
+
 async function createOne(req, res) {
   const prjId = req.body.data.projectId;
   const project = await Project.findById(prjId).exec();
-
+  
   const applicantId = req.body.data.userID;
   const prjName = project.name;
   const userField = req.body.userField;
   const prjField = req.body.prjField;
   const userUni = req.body.userUni;
   const prjDescription = req.body.prjDescription;
-
-  const role = req.body.data.projectRole;
-  const status = req.body.data.status;
+  
+  const role = req.body.data.projectRole
+  const status = req.body.data.status
 
   const application = new Application({
     prjId,
@@ -63,7 +64,7 @@ async function createOne(req, res) {
     userUni,
     prjDescription,
     role,
-    status,
+    status
   });
   await Project.findByIdAndUpdate(prjId, {
     application: application,
@@ -141,7 +142,7 @@ const getAll = (req, res) => {
 };
 
 const getAllbyUser = (req, res) => {
-  findAllbelongToUser(req, res);
+  findAllbelongToUser(req, res)
   console.log("here");
 };
 
