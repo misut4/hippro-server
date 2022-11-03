@@ -29,6 +29,12 @@ const applicationSchema = new mongoose.Schema({
   prjDescription: {
     type: String,
     ref: Project,
+  },
+  role: {
+    type: String
+  },
+  status: {
+    type: String
   }
 });
 
