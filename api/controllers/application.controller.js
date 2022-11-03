@@ -57,7 +57,7 @@ async function createOne(req, res) {
   await application
     .save()
     .then((result) => {
-      return res.json(result, project);
+      return res.status(201).json(result, project);
     })
     .catch((err) => {
       console.log(err);
