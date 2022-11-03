@@ -19,7 +19,7 @@ async function findbyId(req, res) {
 }
 
 async function findAll(req, res) {
-  await Application.find({status: {$ne: "Rejected"}})
+  await Application.find({ status: { $ne: "Rejected" } })
     .exec()
     .then((application) => {
       return res.json(application);
@@ -109,19 +109,18 @@ async function acceptOne(req, res) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  const userEmail = await User.findById(userId).select('email').exec()
-  const project = Project.findById(projectId)
-  project.updateOne({$push: {participants: userEmail}})
+  const userEmail = await User.findById(userId).select("email").exec();
+  const project = Project.findById(projectId);
+  project.updateOne({ $push: { participants: userEmail } });
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
-  const application = new Application({
-    status,
-  });
-  application
-    .update()
+  const application = await Application.findByIdAndUpdate(applicationId, {
+    status: status,
+  })
+    .exec()
     .then((result) => {
-      return res.json(result);
+      return res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
@@ -149,7 +148,6 @@ async function rejectOne(req, res) {
     });
 }
 
-
 async function deleteOne(req, res) {
   const id = req.body.id;
 
@@ -166,7 +164,6 @@ async function deleteOne(req, res) {
     code: "200",
   });
 }
-
 
 //=====================================================================================
 
@@ -206,7 +203,6 @@ const rejectApplication = (req, res) => {
 const deleteApplication = (req, res) => {
   deleteOne(req, res);
 };
-
 
 module.exports = {
   getById,
