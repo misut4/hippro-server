@@ -109,7 +109,7 @@ async function acceptOne(req, res) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  const user = await Project.findById(userId).exec()
+  const user = await User.findById(userId).exec()
   const project = await Project.findByIdAndUpdate(projectId, {$push: {participants: user.name}}).exec()
   
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
