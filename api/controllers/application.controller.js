@@ -120,6 +120,7 @@ async function acceptOne(req, res) {
   })
     .exec()
     .then((result) => {
+      console.log("accepted");
       return res.status(200).json(result);
     })
     .catch((err) => {
