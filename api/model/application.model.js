@@ -31,7 +31,7 @@ const applicationSchema = new mongoose.Schema({
     ref: Project,
   },
   role: {
-    type: String
+    type: Array
   },
   status: {
     type: String
