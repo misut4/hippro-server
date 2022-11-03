@@ -112,7 +112,7 @@ async function acceptOne(req, res) {
   const user = await Project.findById(userId).exec()
   const project = await Project.findById(projectId).exec()
 
-  project.participants.push(user.email)
+  project.updateOne({$push: {participants: user.name}})
   
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
