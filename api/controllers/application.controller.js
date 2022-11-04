@@ -67,7 +67,7 @@ async function createOne(req, res) {
   const projectOwner = await Project.findById(prjId).select("userID").exec();
 
   const applicantId = req.body.data.userID;
-  const prjName = projectName;
+  const prjName = projectName.name;
   const userField = req.body.userField;
   const prjField = req.body.prjField;
   const userUni = req.body.userUni;
