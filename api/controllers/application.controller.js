@@ -125,7 +125,7 @@ async function acceptOne(req, res) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  //get user's email and avatar
+  //get user's info
   const userEmail = await User.findById(userId).select("email").exec();
   const userAvatar = await User.findById(userId).select("avatar").exec();
 
@@ -133,7 +133,7 @@ async function acceptOne(req, res) {
   await Project.findById(projectId)
     .updateOne({
       $push: {
-        participants: { email: userEmail.email, avatar: userAvatar.avatar },
+        participants: {_id: userId, email: userEmail.email, avatar: userAvatar.avatar },
       },
     })
     .exec();
