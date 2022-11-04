@@ -32,7 +32,7 @@ async function findAll(req, res) {
 async function findAllbelongToUser(req, res) {
   const userId = req.query.userId;
   console.log(userId);
-  await Application.find({ applicantId: userId })
+  await Application.find({ applicantId: userId, status: "Pending" })
     .exec()
     .then((application) => {
       return res.status(200).json(application);
@@ -51,7 +51,7 @@ async function findAllReceived(req, res) {
 
   var result = project.map((a) => a._id);
 
-  await Application.find({ prjId: result })
+  await Application.find({ prjId: result, status: "Pending" })
     .exec()
     .then((application) => {
       return res.json(application);
@@ -117,7 +117,7 @@ async function acceptOne(req, res) {
 
   const userEmail = await User.findById(userId).select("email").exec();
   Project.findById(projectId).updateOne({ $push: { participants: userEmail } }).exec();
-  ;
+  
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
@@ -125,24 +125,17 @@ async function acceptOne(req, res) {
 }
 
 async function rejectOne(req, res) {
-  const applicationId = req.body.applicantId;
-  const status = "Rejected";
+  const applicationId = req.body.data.applicationId;
+  const projectId = req.body.data.projectId;
+  const userId = req.body.data.userID;
+  const status = req.body.data.status;
 
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  const application = await Application.findByIdAndUpdate(applicationId, {
-    status: status,
-  })
-    .exec()
-    .then((result) => {
-      console.log("rejected");
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  await Project.findById(projectId).updateOne({ $pop: { application: applicationId } }).exec();
+
 }
 
 async function deleteOne(req, res) {
