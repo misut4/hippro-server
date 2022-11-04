@@ -106,8 +106,10 @@ async function acceptOne(req, res) {
   const status = req.body.data.status;
 
   console.log(status);
-  await Application.findById(applicationId).updateOne({status: status}).exec()
-  
+  //update application's status
+  await Application.findById(applicationId)
+    .updateOne({ status: status })
+    .exec();
 
   // await application.save();
 
@@ -115,9 +117,22 @@ async function acceptOne(req, res) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
+  //get user's email and avatar
   const userEmail = await User.findById(userId).select("email").exec();
-  Project.findById(projectId).updateOne({ $push: { participants: userEmail } }).exec();
-  
+  const userAvatar = await User.findById(userId).select("avatar").exec();
+
+  //update user's info into applied project
+  await Project.findById(projectId)
+    .updateOne(
+      { $push: { participants: userEmail } },
+      { $push: { participants: userAvatar } }
+    )
+    .exec();
+
+  //update/remove user's application from project  
+  await Project.findById(projectId)
+    .updateOne({ $pull: { application: {_id: applicationId} } })
+    .exec();
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
@@ -128,14 +143,21 @@ async function rejectOne(req, res) {
   const applicationId = req.body.data.applicationId;
   const projectId = req.body.data.projectId;
   const userId = req.body.data.userID;
-  const status = req.body.data.status;
+  const status = "Rejected";
 
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  await Project.findById(projectId).updateOne({ $pop: { application: applicationId } }).exec();
+  //update application's status
+  await Application.findById(applicationId)
+    .updateOne({ status: status })
+    .exec();
 
+  //update/remove user's application from project  
+  await Project.findById(projectId)
+    .updateOne({ $pop: { application: applicationId } })
+    .exec();
 }
 
 async function deleteOne(req, res) {
