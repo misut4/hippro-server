@@ -116,8 +116,8 @@ async function acceptOne(req, res) {
   }
 
   const userEmail = await User.findById(userId).select("email").exec();
-  const project = await Project.findById(projectId).exec();
-  await project.updateOne({ $push: { participants: userEmail } });
+  Project.findById(projectId).updateOne({ $push: { participants: userEmail } }).exec();
+  ;
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
