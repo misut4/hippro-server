@@ -129,8 +129,7 @@ async function acceptOne(req, res) {
   //update user's info into applied project
   await Project.findById(projectId)
     .updateOne(
-      { $push: { participants: userEmail } },
-      { $push: { participants: userAvatar } }
+      { $push: { participants: {email: userEmail.email, avatar: userAvatar.avatar}} }
     )
     .exec();
 
