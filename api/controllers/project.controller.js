@@ -21,7 +21,6 @@ async function findByText(req, res) {
   console.log(searchName);
   console.log(searchUni);
   const project = await Project.find({ name: { $regex: searchName }, uni: { $regex: searchUni } });
-  console.log(project);
   if (!project) {
     return res.status(200).json({ msg: "failed", code: 400 });
   }
