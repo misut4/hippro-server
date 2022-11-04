@@ -103,7 +103,7 @@ async function acceptOne(req, res) {
   const applicationId = req.body.applicationId;
   const projectId = req.body.projectId;
   const userId = req.body.userId;
-  const status = req.body.status;
+  const status = "Accepted";
 
   console.log(status);
   const application = await Application.findByIdAndUpdate(applicationId, {
@@ -127,7 +127,7 @@ async function acceptOne(req, res) {
 
 async function rejectOne(req, res) {
   const applicationId = req.body.applicantId;
-  const status = req.body.status;
+  const status = "Rejected";
 
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
