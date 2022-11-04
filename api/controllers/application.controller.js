@@ -77,7 +77,7 @@ async function createOne(req, res) {
   const status = req.body.data.status;
 
   if (projectOwner.userID === applicantId) {
-    return res.status(200).json("Owner cant apply to their project!!1!")
+    return res.status(200).json({msg: "Owner cant apply to their project!!1!"})
   }
 
   const application = new Application({
