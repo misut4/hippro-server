@@ -20,7 +20,10 @@ async function findByText(req, res) {
   const searchUni = req.query.uni || "";
   console.log(searchName);
   console.log(searchUni);
-  const project = await Project.find({ name: { $regex: searchName }, uni: { $regex: searchUni } });
+  const project = await Project.find({
+    name: { $regex: searchName, $options: "i" },
+    uni: { $regex: searchUni, $options: "i" },
+  });
   if (!project) {
     return res.status(200).json({ msg: "failed", code: 400 });
   }
