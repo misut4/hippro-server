@@ -63,10 +63,11 @@ async function findAllReceived(req, res) {
 
 async function createOne(req, res) {
   const prjId = req.body.data.projectId;
-  const project = await Project.findById(prjId).exec();
+  const projectName = await Project.findById(prjId).select("name").exec();
+  const projectOwner = await Project.findById(prjId).select("userID").exec();
 
   const applicantId = req.body.data.userID;
-  const prjName = project.name;
+  const prjName = projectName;
   const userField = req.body.userField;
   const prjField = req.body.prjField;
   const userUni = req.body.userUni;
@@ -75,7 +76,7 @@ async function createOne(req, res) {
   const role = req.body.data.role;
   const status = req.body.data.status;
 
-  if (project.userID === applicantId) {
+  if (projectOwner.userID === applicantId) {
     return res.status(200).json("Owner cant apply to their project!!1!")
   }
 
