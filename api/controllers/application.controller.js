@@ -110,7 +110,7 @@ async function acceptOne(req, res) {
     status: status,
   }).exec();
 
-  await application.save();
+  // await application.save();
 
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
