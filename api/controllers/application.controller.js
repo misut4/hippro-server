@@ -32,7 +32,7 @@ async function findAll(req, res) {
 async function findAllbelongToUser(req, res) {
   const userId = req.query.userId;
   console.log(userId);
-  await Application.find({ applicantId: userId, status: "Pending" })
+  await Application.find({ applicantId: userId })
     .exec()
     .then((application) => {
       return res.status(200).json(application);
