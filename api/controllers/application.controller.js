@@ -75,6 +75,10 @@ async function createOne(req, res) {
   const role = req.body.data.role;
   const status = req.body.data.status;
 
+  if (project.userID === applicantId) {
+    return res.status(200).json("Owner cant apply to their project!!1!")
+  }
+
   const application = new Application({
     prjId,
     applicantId,
