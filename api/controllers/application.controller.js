@@ -106,9 +106,8 @@ async function acceptOne(req, res) {
   const status = "Accepted";
 
   console.log(status);
-  const application = await Application.findByIdAndUpdate(applicationId, {
-    status: status,
-  }).exec();
+  await Application.findById(applicationId).updateOne({status: status}).exec()
+  
 
   // await application.save();
 
@@ -117,12 +116,12 @@ async function acceptOne(req, res) {
   }
 
   const userEmail = await User.findById(userId).select("email").exec();
-  const project = Project.findById(projectId);
+  const project = await Project.findById(projectId).exec();
   await project.updateOne({ $push: { participants: userEmail } });
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
-  return res.status(200).json(application);
+  return res.status(200).json(await Application.findById(applicationId));
 }
 
 async function rejectOne(req, res) {
