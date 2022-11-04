@@ -14,7 +14,7 @@ router.get('/getbyid', getById)
 
 router.get('/getallprj', getAll)
 
-router.get('/seach', search)
+router.get('/search', search)
 
 router.post('/create', createPrj)
 

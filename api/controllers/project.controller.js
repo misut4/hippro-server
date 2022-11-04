@@ -15,10 +15,12 @@ async function findbyId(req, res) {
   });
 }
 
-async function findByName(req, res) {
-  const searchString = req.body.name;
-  console.log(searchString);
-  const project = await Project.find({ name: { $regex: /^searchString/ } });
+async function findByText(req, res) {
+  const searchName = req.query.name || "";
+  const searchUni = req.query.uni || "";
+  console.log(searchName);
+  console.log(searchUni);
+  const project = await Project.find({ name: { $regex: searchName }, uni: { $regex: searchUni } });
   console.log(project);
   if (!project) {
     return res.status(200).json({ msg: "failed", code: 400 });
@@ -154,7 +156,7 @@ const getAll = (req, res) => {
 };
 
 const search = (req, res) => {
-  findByName(req, res);
+  findByText(req, res);
 };
 //REST API POST=================================================
 const createPrj = (req, res) => {

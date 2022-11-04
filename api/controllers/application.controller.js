@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Application = require("../model/application.model");
 const Project = require("../model/project.model");
 const User = require("../model/user.model");
@@ -77,7 +78,9 @@ async function createOne(req, res) {
   const status = req.body.data.status;
 
   if (projectOwner.userID === applicantId) {
-    return res.status(200).json({msg: "Owner cant apply to their project!!1!"})
+    return res
+      .status(200)
+      .json({ msg: "Owner cant apply to their project!!1!" });
   }
 
   const application = new Application({
@@ -128,14 +131,16 @@ async function acceptOne(req, res) {
 
   //update user's info into applied project
   await Project.findById(projectId)
-    .updateOne(
-      { $push: { participants: {email: userEmail.email, avatar: userAvatar.avatar}} }
-    )
+    .updateOne({
+      $push: {
+        participants: { email: userEmail.email, avatar: userAvatar.avatar },
+      },
+    })
     .exec();
 
-  //update/remove user's application from project  
+  //update/remove user's application from project
   await Project.findById(projectId)
-    .updateOne({ $pull: { application: {_id: applicationId} } })
+    .updateOne({ $pull: { application: { _id: applicationId } } })
     .exec();
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
@@ -147,7 +152,7 @@ async function rejectOne(req, res) {
   const applicationId = req.body.data.applicationId;
   const projectId = req.body.data.projectId;
   const userId = req.body.data.userID;
-  const status = "Rejected";
+  const status = "Declined";
 
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
@@ -156,12 +161,12 @@ async function rejectOne(req, res) {
   //update application's status
   await Application.findById(applicationId)
     .updateOne({ status: status })
-    .exec();
+    .exec().then((result) =>{
+      return res.status(200).json(result)
+    }).catch((err) => {
+      return console.log(err);
+    });
 
-  //update/remove user's application from project  
-  await Project.findById(projectId)
-    .updateOne({ $pop: { application: applicationId } })
-    .exec();
 }
 
 async function deleteOne(req, res) {
