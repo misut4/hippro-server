@@ -100,10 +100,10 @@ async function createOne(req, res) {
 }
 
 async function acceptOne(req, res) {
-  const applicationId = req.body.applicationId;
-  const projectId = req.body.projectId;
-  const userId = req.body.userId;
-  const status = "Accepted";
+  const applicationId = req.body.data.applicationId;
+  const projectId = req.body.data.projectId;
+  const userId = req.body.data.userID;
+  const status = req.body.data.status;
 
   console.log(status);
   await Application.findById(applicationId).updateOne({status: status}).exec()
