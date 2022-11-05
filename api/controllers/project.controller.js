@@ -138,7 +138,7 @@ async function deleteOne(req, res) {
   Project.deleteOne({
     _id: id,
   }).exec().then((result) => {
-    return res.json({ msg: "success", result });
+    return res.status(200).json({ msg: "success", result });
   })
   .catch((err) => {
     console.log(err);
