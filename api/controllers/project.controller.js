@@ -129,12 +129,13 @@ async function updateOne(req, res) {
 
 async function deleteOne(req, res) {
   const id = req.body.data.projectId;
+  console.log(id);
 
   if (!Project.findById(id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  console.log(id);
+  // console.log(await Project.findById(id).exec())
   Project.deleteOne({
     _id: id,
   }).exec().then((result) => {
@@ -143,7 +144,6 @@ async function deleteOne(req, res) {
   .catch((err) => {
     console.log(err);
   });
-
   
 }
 
