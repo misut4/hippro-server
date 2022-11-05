@@ -128,7 +128,7 @@ async function updateOne(req, res) {
 }
 
 async function deleteOne(req, res) {
-  const id = req.body.data.projectId;
+  const id = req.body.projectId;
   console.log(id);
 
   if (!Project.findById(id)) {
