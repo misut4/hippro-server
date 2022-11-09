@@ -34,6 +34,7 @@ async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 1000,
+    lastPage: 1 + parseInt(await Project.countDocuments()),
   };
 
   Project.find()
@@ -46,6 +47,15 @@ async function findAll(req, res) {
     .catch((err) => {
       console.log(err);
     });
+}
+
+async function findByUser(req, res) {
+  const userID = req.body.userID;
+
+  const projects = await Project.find({ userID: userID }).exec();
+  const count = await Project.find({ userID: userID }).countDocuments().exec();
+
+  return res.status(200).json({count: count, projects: projects})
 }
 
 async function createOne(req, res) {
@@ -138,13 +148,14 @@ async function deleteOne(req, res) {
   // console.log(await Project.findById(id).exec())
   Project.deleteOne({
     _id: id,
-  }).exec().then((result) => {
-    return res.status(200).json({ msg: "success", result });
   })
-  .catch((err) => {
-    console.log(err);
-  });
-  
+    .exec()
+    .then((result) => {
+      return res.status(200).json({ msg: "success", result });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 //=====================================================================================
@@ -156,7 +167,10 @@ const getById = (req, res) => {
 
 const getAll = (req, res) => {
   findAll(req, res);
-  console.log("here");
+};
+
+const getAllByUser = (req, res) => {
+  findByUser(req, res);
 };
 
 const search = (req, res) => {
@@ -178,6 +192,7 @@ const deletePrj = (req, res) => {
 module.exports = {
   getById,
   getAll,
+  getAllByUser,
   search,
   createPrj,
   updatePrj,

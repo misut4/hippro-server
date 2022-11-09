@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose");
 const Application = require("../model/application.model");
 const Project = require("../model/project.model");
 const User = require("../model/user.model");
+const Noti = require("../model/noti.model");
 
 //DEDICATED FUNCTIONS=========================================================
 async function findbyId(req, res) {
@@ -83,6 +84,18 @@ async function createOne(req, res) {
       .json({ msg: "Owner cant apply to their project!!1!" });
   }
 
+  //find sender and receiver
+  const fromUser = await User.findById(applicantId).exec();
+  const rcId = await Project.findById(prjId).select("userID").exec();
+  const rcUser = await User.findById(rcId).exec();
+
+  //push noti to prj's owner
+  const noti = new Noti({
+    content: `${fromUser.email} has sent you an application`,
+    fromUser: fromUser,
+    rcUser: rcUser,
+  }).save();
+
   const application = new Application({
     prjId,
     applicantId,
@@ -110,7 +123,7 @@ async function createOne(req, res) {
 async function acceptOne(req, res) {
   const applicationId = req.body.data.applicationId;
   const projectId = req.body.data.projectId;
-  const userId = req.body.data.userID;
+  const applicantId = req.body.data.userID;
   const status = req.body.data.status;
 
   console.log(status);
@@ -126,24 +139,40 @@ async function acceptOne(req, res) {
   }
 
   //get user's info
-  const userEmail = await User.findById(userId).select("email").exec();
-  const userAvatar = await User.findById(userId).select("avatar").exec();
+  const userEmail = await User.findById(applicantId).select("email").exec();
+  const userAvatar = await User.findById(applicantId).select("avatar").exec();
 
   //update user's info into applied project
   await Project.findById(projectId)
     .updateOne({
-      $push: {
-        participants: {_id: userId, email: userEmail.email, avatar: userAvatar.avatar },
+      $addToSet: {
+        participants: {
+          _id: applicantId,
+          email: userEmail.email,
+          avatar: userAvatar.avatar,
+        },
       },
     })
     .exec();
 
   //update/remove user's application from project
   await Project.findById(projectId)
-    .updateOne({ $pull: { application: { _id: applicationId } } })
+    .updateOne({ $pull: { application: applicationId } })
     .exec();
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
+
+  //find sender and receiver
+  const fromUser = await User.findById(applicantId).exec();
+  const rcId = await Project.findById(projectId).select("userID").exec();
+  const rcUser = await User.findById(rcId).exec();
+
+  //push noti to prj's owner
+  const noti = new Noti({
+    content: `${rcUser.email} has accepted your an application`,
+    fromUser: fromUser,
+    rcUser: rcUser,
+  });
 
   return res.status(200).json(await Application.findById(applicationId));
 }
@@ -151,22 +180,40 @@ async function acceptOne(req, res) {
 async function rejectOne(req, res) {
   const applicationId = req.body.data.applicationId;
   const projectId = req.body.data.projectId;
-  const userId = req.body.data.userID;
+  const applicantId = req.body.data.userID;
   const status = "Declined";
 
   if (!Application.findById(applicationId)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
+  //find sender and receiver
+  const fromUser = await User.findById(applicantId).exec();
+  const rcId = await Project.findById(projectId).select("userID").exec();
+  const rcUser = await User.findById(rcId).exec();
+
+  //push noti to prj's owner
+  const noti = new Noti({
+    content: `${rcUser} has accepted your an application`,
+    fromUser: fromUser,
+    rcUser: rcUser,
+  });
+
+  //update/remove user's application from project
+  await Project.findById(projectId)
+    .updateOne({ $pull: { application: applicationId } })
+    .exec();
+
   //update application's status
   await Application.findById(applicationId)
     .updateOne({ status: status })
-    .exec().then((result) =>{
-      return res.status(200).json(result)
-    }).catch((err) => {
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
       return console.log(err);
     });
-
 }
 
 async function deleteOne(req, res) {

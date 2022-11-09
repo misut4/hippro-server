@@ -4,7 +4,6 @@ const User = require("../model/user.model");
 async function findbyId(req, res) {
   const id = req.query.id;
   console.log(req.query.id);
-  console.log(id);
   const user = await User.findById(id).exec()
   console.log(user);
   if (!user) {
@@ -78,38 +77,27 @@ async function createOne(req, res) {
 }
 
 async function updateOne(req, res) {
-  const _id = req.body._id;
+  const id = req.body.id;
   const name = req.body.name;
   const password = req.body.password;
   const skillset = req.body.skillset;
   const email = req.body.email
   const uni = req.body.uni;
-  const avatar = req.body.avatar;
-  const prj_id = req.body.prj_id;
+  const bio = req.body.bio;
+  const phone = req.body.phone;
 
-  if (!User.findById(_id)) {
+  if (!User.findById(id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  // req.user.password = undefined
-  const user = new User({
-    //key and value are the same so only need to type one
-    name,
-    password,
-    email,
-    skillset,
-    uni,
-    prj_id,
-    avatar,
-  });
-  user
-    .update()
-    .then((result) => {
-      return res.json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  await User.findByIdAndUpdate(id, {
+    name: name,
+    skillset: skillset,
+    uni: uni,
+    bio: bio,
+    phone: phone
+  })
+
 }
 
 //=====================================================================================

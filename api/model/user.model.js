@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
   uni: {
     type: String,
   },
+  bio: {
+    type: String
+  },
+  phone: {
+    type: Number
+  },
   avatar: {
     type: String,
     default: "https://cdn-icons-png.flaticon.com/512/147/147142.png",
