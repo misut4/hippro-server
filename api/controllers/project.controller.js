@@ -32,7 +32,7 @@ async function findByText(req, res) {
 
 async function findAll(req, res) {
   const pageOptions = {
-    page: parseInt(req.query.page, 10) || 1,
+    page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
     lastPage: 1 + parseInt(await Project.countDocuments()),
   };
