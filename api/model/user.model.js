@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: Number
   },
+  role: {
+    type: String
+  },
   avatar: {
     type: String,
     default: "https://cdn-icons-png.flaticon.com/512/147/147142.png",

@@ -8,6 +8,7 @@ const {
     sortByDescDate,
     sortByAscDate,
     search,
+    approve,
     createPrj,
     updatePrj,
     deletePrj
@@ -28,6 +29,8 @@ router.get('/search', search)
 router.post('/create', createPrj)
 
 router.put('/update', updatePrj)
+
+router.put('/approve', approve)
 
 router.delete('/delete', deletePrj)
 

@@ -35,6 +35,9 @@ const projectSchema = new mongoose.Schema({
   },
   participants: {
     type: Array
+  },
+  status: {
+    type: String
   }
 
 });

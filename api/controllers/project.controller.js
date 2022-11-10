@@ -39,7 +39,8 @@ async function findAll(req, res) {
     lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
-  Project.find()
+  Project.find({ status: { $ne: "Pending for approval" } })
+    .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
     .exec()
@@ -96,6 +97,7 @@ async function createOne(req, res) {
   const desc = req.body.data.desc;
   const applications = req.body.data.applications;
   const participants = req.body.data.participants;
+  const status = "Pending for approval";
 
   const project = new Project({
     //key and value are the same so only need to type one
@@ -110,12 +112,27 @@ async function createOne(req, res) {
     desc,
     applications,
     participants,
+    status,
   });
   project
     .save()
     .then((result) => {
       console.log("project created");
       return res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function approveProject(req, res) {
+  const id = req.query.id;
+  await Project.findByIdAndUpdate(id, {
+    status: "Approved",
+  })
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
@@ -200,12 +217,12 @@ const getAllByUser = (req, res) => {
 };
 
 const sortByDescDate = (req, res) => {
-  sortByDesc(req, res)
-}
+  sortByDesc(req, res);
+};
 
 const sortByAscDate = (req, res) => {
-  sortByAsc(req, res)
-}
+  sortByAsc(req, res);
+};
 
 const search = (req, res) => {
   findByText(req, res);
@@ -217,6 +234,10 @@ const createPrj = (req, res) => {
 //REST API PUT=================================================
 const updatePrj = (req, res) => {
   updateOne(req, res);
+};
+
+const approve = (req, res) => {
+  approveProject(req, res);
 };
 //REST API DELETE=================================================
 const deletePrj = (req, res) => {
@@ -230,6 +251,7 @@ module.exports = {
   sortByDescDate,
   sortByAscDate,
   search,
+  approve,
   createPrj,
   updatePrj,
   deletePrj,
