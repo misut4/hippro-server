@@ -5,6 +5,8 @@ const {
     getById,
     getAll,
     getAllByUser,
+    sortByDescDate,
+    sortByAscDate,
     search,
     createPrj,
     updatePrj,
@@ -16,6 +18,10 @@ router.get('/getbyid', getById)
 router.get('/getallprj', getAll)
 
 router.get('/getbyuser', getAllByUser)
+
+router.get('/sortdesc', sortByDescDate)
+
+router.get('/sortasc', sortByAscDate)
 
 router.get('/search', search)
 

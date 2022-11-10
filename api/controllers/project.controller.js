@@ -18,11 +18,13 @@ async function findbyId(req, res) {
 async function findByText(req, res) {
   const searchName = req.query.name || "";
   const searchUni = req.query.uni || "";
+  const searchLocation = req.query.location || "HCM";
   console.log(searchName);
   console.log(searchUni);
   const project = await Project.find({
     name: { $regex: searchName, $options: "i" },
     uni: { $regex: searchUni, $options: "i" },
+    location: { $regex: searchLocation, $options: "i" },
   });
   if (!project) {
     return res.status(200).json({ msg: "failed", code: 400 });
@@ -34,7 +36,7 @@ async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: parseInt(await Project.countDocuments().exec()) / 6
+    lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
   Project.find()
@@ -55,7 +57,31 @@ async function findByUser(req, res) {
   const projects = await Project.find({ userID: userID }).exec();
   const count = await Project.find({ userID: userID }).countDocuments().exec();
 
-  return res.status(200).json({count: count, projects: projects})
+  return res.status(200).json({ count: count, projects: projects });
+}
+
+async function sortByDesc(req, res) {
+  await Project.find()
+    .sort({ startDate: -1 })
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function sortByAsc(req, res) {
+  await Project.find()
+    .sort({ startDate: 1 })
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 async function createOne(req, res) {
@@ -173,6 +199,14 @@ const getAllByUser = (req, res) => {
   findByUser(req, res);
 };
 
+const sortByDescDate = (req, res) => {
+  sortByDesc(req, res)
+}
+
+const sortByAscDate = (req, res) => {
+  sortByAsc(req, res)
+}
+
 const search = (req, res) => {
   findByText(req, res);
 };
@@ -193,6 +227,8 @@ module.exports = {
   getById,
   getAll,
   getAllByUser,
+  sortByDescDate,
+  sortByAscDate,
   search,
   createPrj,
   updatePrj,
