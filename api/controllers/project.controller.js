@@ -39,13 +39,25 @@ async function findAll(req, res) {
     lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
-  Project.find({ status: { $ne: "Pending for approval" } })
+  await Project.find({ status: { $ne: "Pending for approval" } })
     .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
     .exec()
     .then((project) => {
       return res.json({ msg: "success", pageOptions, project });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+async function findAll_admin(req, res) {
+  await Project.find()
+    .sort({ endDate: -1 })
+    .exec()
+    .then((project) => {
+      return res.json({ msg: "success", project });
     })
     .catch((err) => {
       console.log(err);
@@ -212,6 +224,10 @@ const getAll = (req, res) => {
   findAll(req, res);
 };
 
+const getAll_admin = (req, res) => {
+  findAll_admin(req, res);
+};
+
 const getAllByUser = (req, res) => {
   findByUser(req, res);
 };
@@ -247,6 +263,7 @@ const deletePrj = (req, res) => {
 module.exports = {
   getById,
   getAll,
+  getAll_admin,
   getAllByUser,
   sortByDescDate,
   sortByAscDate,

@@ -4,6 +4,7 @@ const router = express.Router()
 const {
     getById,
     getAll,
+    getAll_admin,
     getAllByUser,
     sortByDescDate,
     sortByAscDate,
@@ -17,6 +18,8 @@ const {
 router.get('/getbyid', getById)
 
 router.get('/getallprj', getAll)
+
+router.get('/admingetall', getAll_admin)
 
 router.get('/getbyuser', getAllByUser)
 

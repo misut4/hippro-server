@@ -77,14 +77,14 @@ async function createOne(req, res) {
 }
 
 async function updateOne(req, res) {
-  const id = req.body.id;
+  const id = req.body.userID;
   const name = req.body.name;
-  const password = req.body.password;
+  const location = req.body.location;
   const skillset = req.body.skillset;
-  const email = req.body.email
   const uni = req.body.uni;
   const bio = req.body.bio;
   const phone = req.body.phone;
+  const avatar = req.body.avatar;
 
   if (!User.findById(id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
@@ -92,10 +92,12 @@ async function updateOne(req, res) {
 
   await User.findByIdAndUpdate(id, {
     name: name,
+    location: location,
     skillset: skillset,
     uni: uni,
     bio: bio,
-    phone: phone
+    phone: phone,
+    avatar: avatar
   })
 
 }
