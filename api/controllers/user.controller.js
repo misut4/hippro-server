@@ -100,6 +100,10 @@ async function updateOne(req, res) {
     bio: bio,
     phone: phone,
     avatar: avatar
+  }).then((result) => {
+    return res.status(200).json(result)
+  }).catch((err) => {
+    console.log(err);
   })
 
 }
