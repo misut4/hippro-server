@@ -4,7 +4,7 @@ const User = require("../model/user.model");
 async function findbyId(req, res) {
   const id = req.query.id;
   console.log(req.query.id);
-  const user = await User.findById(id).exec()
+  const user = await User.findById(id).exec();
   console.log(user);
   if (!user) {
     return res.status(200).json({ msg: "failed", code: 400 });
@@ -12,7 +12,7 @@ async function findbyId(req, res) {
   return res.status(200).json({
     msg: "success",
     code: 200,
-    data: user
+    data: user,
   });
 }
 
@@ -20,7 +20,7 @@ async function findbyEmail(req, res) {
   const email = req.query.email;
   console.log(req.query.email);
   console.log(email);
-  const user = await User.findOne({email: email}).exec()
+  const user = await User.findOne({ email: email }).exec();
   console.log(user);
   if (!user) {
     return res.status(200).json({ msg: "failed", code: 400 });
@@ -28,12 +28,13 @@ async function findbyEmail(req, res) {
   return res.status(200).json({
     msg: "success",
     code: 200,
-    data: user
+    data: user,
   });
 }
 
 async function findAll(req, res) {
-  User.find().exec()
+  User.find()
+    .exec()
     .then((user) => {
       return res.json(user);
     })
@@ -46,7 +47,7 @@ async function createOne(req, res) {
   const name = req.body.name;
   const password = req.body.password;
   const skillset = req.body.skillset;
-  const email = req.body.email
+  const email = req.body.email;
   const uni = req.body.uni;
   const avatar = req.body.avatar;
   const prj_id = req.body.prj_id;
@@ -95,17 +96,18 @@ async function updateOne(req, res) {
   await User.findByIdAndUpdate(id, {
     name: name,
     location: location,
-    skillset: skillset,
+    $push: { skillset: skillset },
     uni: uni,
     bio: bio,
     phone: phone,
-    avatar: avatar
-  }).then((result) => {
-    return res.status(200).json(result)
-  }).catch((err) => {
-    console.log(err);
+    avatar: avatar,
   })
-
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 //=====================================================================================
