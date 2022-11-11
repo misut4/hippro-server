@@ -96,7 +96,7 @@ async function updateOne(req, res) {
   await User.findByIdAndUpdate(id, {
     name: name,
     location: location,
-    $push: { skillset: skillset },
+    $addToSet: { skillset: { skill: skillset } },
     uni: uni,
     bio: bio,
     phone: phone,
