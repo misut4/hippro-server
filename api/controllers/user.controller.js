@@ -81,7 +81,7 @@ async function updateOne(req, res) {
   const id = req.body.userID;
   const name = req.body.name;
   const location = req.body.location;
-  const skillset = req.body.skillset;
+  const skillset = req.body.skillSet;
   const uni = req.body.uni;
   const bio = req.body.bio;
   const phone = req.body.phone;
@@ -96,7 +96,7 @@ async function updateOne(req, res) {
   await User.findByIdAndUpdate(id, {
     name: name,
     location: location,
-    $addToSet: { skillset: { skill: skillset } },
+    $addToSet: { skillset: skillset },
     uni: uni,
     bio: bio,
     phone: phone,
