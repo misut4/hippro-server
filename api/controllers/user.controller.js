@@ -80,15 +80,19 @@ async function createOne(req, res) {
 async function updateOne(req, res) {
   const id = req.body.userID;
   const name = req.body.name;
-  const location = req.body.location;
   const skillset = req.body.skillSet;
   const uni = req.body.uni;
   const bio = req.body.bio;
   const phone = req.body.phone;
   var avatar;
+  var location;
 
   if (!(req.body.avatar === "")) {
     avatar = req.body.avatar;
+  }
+
+  if (!(req.body.location === "")) {
+    location = req.body.location 
   }
 
   if (!User.findById(id)) {
