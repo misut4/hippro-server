@@ -39,7 +39,13 @@ async function findAll(req, res) {
     lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
-  await Project.find({ status: { $ne: "Pending" } })
+  let currentDate = new Date()
+  console.log(currentDate);
+
+  await Project.find(
+    { status: { $ne: "Pending" } },
+    { endDate: { $gte: currentDate } }
+  )
     .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
@@ -65,7 +71,7 @@ async function findAll_admin(req, res) {
 }
 
 async function findByUser(req, res) {
-  const userID = req.query._id;
+  const userID = req.query.id;
 
   const projects = await Project.find({ userID: userID }).exec();
   const count = await Project.find({ userID: userID }).countDocuments().exec();
