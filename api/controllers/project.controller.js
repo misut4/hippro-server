@@ -21,15 +21,29 @@ async function findByText(req, res) {
   const searchLocation = req.query.location || "HCM";
   console.log(searchName);
   console.log(searchUni);
-  const project = await Project.find({
+
+  const pageOptions = {
+    page: parseInt(req.query.page, 10) || 0,
+    limit: parseInt(req.query.limit, 10) || 6,
+    lastPage: parseInt(await Project.countDocuments().exec()) / 6,
+  };
+
+  await Project.find({
     name: { $regex: searchName, $options: "i" },
     uni: { $regex: searchUni, $options: "i" },
     location: { $regex: searchLocation, $options: "i" },
-  });
-  if (!project) {
-    return res.status(200).json({ msg: "failed", code: 400 });
-  }
-  return res.status(200).json(project);
+    status: { $ne: "Pending" }
+  })
+    .sort({ endDate: -1 })
+    .skip(pageOptions.page * pageOptions.limit)
+    .limit(pageOptions.limit)
+    .exec()
+    .then((project) => {
+      return res.json({ msg: "success", pageOptions, project });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 async function findAll(req, res) {
@@ -39,13 +53,7 @@ async function findAll(req, res) {
     lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
-  let currentDate = new Date()
-  console.log(currentDate);
-
-  await Project.find(
-    { status: { $ne: "Pending" } },
-    { endDate: { $gte: currentDate } }
-  )
+  await Project.find({ status: { $ne: "Pending" } })
     .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
