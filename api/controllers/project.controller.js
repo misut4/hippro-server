@@ -39,7 +39,7 @@ async function findAll(req, res) {
     lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
-  await Project.find({ status: { $ne: "Pending for approval" } })
+  await Project.find({ status: { $ne: "Pending" } })
     .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
@@ -109,7 +109,7 @@ async function createOne(req, res) {
   const desc = req.body.data.desc;
   const applications = req.body.data.applications;
   const participants = req.body.data.participants;
-  const status = "Pending for approval";
+  const status = "Pending";
 
   const project = new Project({
     //key and value are the same so only need to type one
