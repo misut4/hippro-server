@@ -10,6 +10,7 @@ const {
     sortByAscDate,
     search,
     approve,
+    decline,
     createPrj,
     updatePrj,
     deletePrj
@@ -34,6 +35,8 @@ router.post('/create', createPrj)
 router.put('/update', updatePrj)
 
 router.put('/approve', approve)
+
+router.put('/decline', decline)
 
 router.delete('/delete', deletePrj)
 

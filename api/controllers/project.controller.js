@@ -151,6 +151,20 @@ async function approveProject(req, res) {
     });
 }
 
+async function declineProject(req, res) {
+  const id = req.query.id;
+  await Project.findByIdAndUpdate(id, {
+    status: "Declined",
+  })
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 async function updateOne(req, res) {
   const _id = req.body._id;
   const name = req.body.name;
@@ -255,6 +269,10 @@ const updatePrj = (req, res) => {
 const approve = (req, res) => {
   approveProject(req, res);
 };
+
+const decline = (req, res) => {
+  declineProject(req, res);
+};
 //REST API DELETE=================================================
 const deletePrj = (req, res) => {
   deleteOne(req, res);
@@ -269,6 +287,7 @@ module.exports = {
   sortByAscDate,
   search,
   approve,
+  decline,
   createPrj,
   updatePrj,
   deletePrj,
