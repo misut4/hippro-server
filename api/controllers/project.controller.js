@@ -65,7 +65,7 @@ async function findAll_admin(req, res) {
 }
 
 async function findByUser(req, res) {
-  const userID = req.body.userID;
+  const userID = req.query._id;
 
   const projects = await Project.find({ userID: userID }).exec();
   const count = await Project.find({ userID: userID }).countDocuments().exec();

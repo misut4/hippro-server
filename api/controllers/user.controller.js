@@ -85,9 +85,11 @@ async function updateOne(req, res) {
   const uni = req.body.uni;
   const bio = req.body.bio;
   const phone = req.body.phone;
-  const avatar = req.body.avatar;
+  var avatar;
 
-  console.log(id);
+  if (!(req.body.avatar === "")) {
+    avatar = req.body.avatar;
+  }
 
   if (!User.findById(id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
