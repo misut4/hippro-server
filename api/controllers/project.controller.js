@@ -1,3 +1,4 @@
+const { updateMany } = require("../model/project.model");
 const Project = require("../model/project.model");
 
 //DEDICATED FUNCTIONS=========================================================
@@ -32,7 +33,7 @@ async function findByText(req, res) {
     name: { $regex: searchName, $options: "i" },
     uni: { $regex: searchUni, $options: "i" },
     location: { $regex: searchLocation, $options: "i" },
-    status: { $ne: "Pending" }
+    status: { $ne: "Pending" },
   })
     .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
@@ -53,7 +54,9 @@ async function findAll(req, res) {
     lastPage: parseInt(await Project.countDocuments().exec()) / 6,
   };
 
-  await Project.find({ status: { $ne: "Pending" } })
+  setExpired();
+
+  await Project.find({ status: { $nin: ["Pending", "Expired"] } })
     .sort({ endDate: -1 })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
@@ -85,6 +88,19 @@ async function findByUser(req, res) {
   const count = await Project.find({ userID: userID }).countDocuments().exec();
 
   return res.status(200).json({ count: count, projects: projects });
+}
+
+async function setExpired() {
+  const currentDate = new Date();
+  await Project.find({ endDate: { $lt: currentDate } })
+    .updateMany({ $set: { status: "Expired" } })
+    .exec();
+
+  console.log(
+    await Project.find({ endDate: { $lt: currentDate } })
+      .countDocuments()
+      .exec()
+  );
 }
 
 async function sortByDesc(req, res) {
@@ -287,6 +303,11 @@ const approve = (req, res) => {
 const decline = (req, res) => {
   declineProject(req, res);
 };
+
+const expire = (req, res) => {
+  setExpired(req, res);
+};
+
 //REST API DELETE=================================================
 const deletePrj = (req, res) => {
   deleteOne(req, res);
@@ -302,6 +323,7 @@ module.exports = {
   search,
   approve,
   decline,
+  expire,
   createPrj,
   updatePrj,
   deletePrj,
