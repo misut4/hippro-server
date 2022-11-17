@@ -103,7 +103,7 @@ async function findAll(req, res) {
     ),
   };
 
-  setExpired();
+  await setExpired();
 
   await Project.find({ status: { $nin: ["Pending", "Expired"] } })
     .sort({ endDate: -1 })
@@ -119,12 +119,22 @@ async function findAll(req, res) {
 }
 
 async function findAll_admin(req, res) {
+  const pageOptions = {
+    page: parseInt(req.query.page, 10) || 0,
+    limit: parseInt(req.query.limit, 10) || 6,
+    lastPage: Math.round(
+      parseInt(await Project.find().countDocuments().exec()) / 6
+    ),
+  };
+
   await setExpired();
+
   await Project.find()
-    .sort({ endDate: -1 })
+    .skip(pageOptions.page * pageOptions.limit)
+    .limit(pageOptions.limit)
     .exec()
     .then((project) => {
-      return res.json({ msg: "success", project });
+      return res.json({ msg: "success", pageOptions, project });
     })
     .catch((err) => {
       console.log(err);
@@ -145,12 +155,6 @@ async function setExpired() {
   await Project.find({ endDate: { $lt: currentDate } })
     .updateMany({ $set: { status: "Expired" } })
     .exec();
-
-  console.log(
-    await Project.find({ endDate: { $lt: currentDate } })
-      .countDocuments()
-      .exec()
-  );
 }
 
 async function sortByDesc(req, res) {
