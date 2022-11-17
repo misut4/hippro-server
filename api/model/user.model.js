@@ -5,15 +5,6 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  username: {
-    type: String,
-  },
-  googleId: {
-    type: String
-  },
-  secret: {
-    type: String
-  },
   password: {
     type: String
   },
@@ -31,9 +22,6 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: Number
-  },
-  role: {
-    type: String
   },
   avatar: {
     type: String,
