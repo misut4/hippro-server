@@ -31,7 +31,7 @@ router.get("/sortasc", sortByAscDate);
 
 router.get("/search", search);
 
-router.get("/searchname", searchName);
+router.get("/searchName", searchName);
 
 router.post("/create", createPrj);
 
