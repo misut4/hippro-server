@@ -51,7 +51,12 @@ async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: parseInt(await Project.countDocuments().exec()) / 6,
+    lastPage:
+      parseInt(
+        await Project.find({ status: { $nin: ["Pending", "Expired"] } })
+          .countDocuments()
+          .exec()
+      ) / 6,
   };
 
   setExpired();
