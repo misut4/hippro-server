@@ -222,7 +222,7 @@ async function createOne(req, res) {
 }
 
 async function approveProject(req, res) {
-  const id = req.body.projectId;
+  const id = req.body.data.projectId;
   console.log(id);
   await Project.findByIdAndUpdate(id, {
     status: "Approved",
@@ -237,7 +237,7 @@ async function approveProject(req, res) {
 }
 
 async function declineProject(req, res) {
-  const id = req.body.projectId;
+  const id = req.body.data.projectId;
   await Project.findByIdAndUpdate(id, {
     status: "Declined",
   })
