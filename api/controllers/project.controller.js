@@ -62,7 +62,7 @@ async function findAll(req, res) {
     .limit(pageOptions.limit)
     .exec()
     .then((project) => {
-      return res.json({ msg: "success", pageOptions, project });
+      return res.status(200).json({ msg: "success", pageOptions, project });
     })
     .catch((err) => {
       console.log(err);
@@ -160,7 +160,7 @@ async function createOne(req, res) {
     .save()
     .then((result) => {
       console.log("project created");
-      return res.json(result);
+      return res.status(201).json(result);
     })
     .catch((err) => {
       console.log(err);
@@ -229,7 +229,7 @@ async function updateOne(req, res) {
   project
     .update(_id)
     .then((result) => {
-      return res.json(result);
+      return res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
