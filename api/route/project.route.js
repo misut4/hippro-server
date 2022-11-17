@@ -9,6 +9,7 @@ const {
   sortByDescDate,
   sortByAscDate,
   search,
+  searchName,
   approve,
   decline,
   createPrj,
@@ -29,6 +30,8 @@ router.get("/sortdesc", sortByDescDate);
 router.get("/sortasc", sortByAscDate);
 
 router.get("/search", search);
+
+router.get("/searchname", searchName);
 
 router.post("/create", createPrj);
 
