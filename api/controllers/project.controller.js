@@ -118,6 +118,17 @@ async function findAll(req, res) {
     });
 }
 
+async function findAllFull(req, res) {
+  await Project.find()
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 async function findAll_admin(req, res) {
   await setExpired();
 
