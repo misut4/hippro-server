@@ -225,7 +225,7 @@ async function approveProject(req, res) {
   const id = req.body.data.projectId;
   console.log(id);
   await Project.findByIdAndUpdate(id, {
-    status: "Approved",
+    status: "Accepted",
   })
     .exec()
     .then((result) => {
@@ -303,6 +303,7 @@ async function deleteOne(req, res) {
     .exec()
     .then((result) => {
       return res.status(200).json(result);
+
     })
     .catch((err) => {
       console.log(err);
