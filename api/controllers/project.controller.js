@@ -26,18 +26,20 @@ async function findByText(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: parseInt(
-      (await Project.find({
-        // name: { $regex: searchName, $options: "i" },
-        uni: { $regex: searchUni, $options: "i" },
-        location: { $regex: searchLocation, $options: "i" },
-        status: { $ne: "Pending" },
-      })
-        .countDocuments()
-        .exec()) / 6
+    lastPage: Math.round(
+      parseInt(
+        await Project.find({
+          // name: { $regex: searchName, $options: "i" },
+          uni: { $regex: searchUni, $options: "i" },
+          location: { $regex: searchLocation, $options: "i" },
+          status: { $ne: "Pending" },
+        })
+          .countDocuments()
+          .exec()
+      ) / 6
     ),
   };
-  
+
   await Project.find({
     // name: { $regex: searchName, $options: "i" },
     uni: { $regex: searchUni, $options: "i" },
@@ -63,16 +65,15 @@ async function findByName(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: parseInt(
-      (await Project.find({
-        name: { $regex: searchName, $options: "i" },
-        status: { $ne: "Pending" },
-      })
-        .countDocuments()
-        .exec()) / 6
+    lastPage: Math.round(
+      parseInt(
+        await Project.find({ status: { $nin: ["Pending", "Expired"] } })
+          .countDocuments()
+          .exec()
+      ) / 6
     ),
   };
-  
+
   await Project.find({
     name: { $regex: searchName, $options: "i" },
     status: { $ne: "Pending" },
@@ -93,12 +94,13 @@ async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage:
+    lastPage: Math.round(
       parseInt(
         await Project.find({ status: { $nin: ["Pending", "Expired"] } })
           .countDocuments()
           .exec()
-       / 6),
+      ) / 6
+    ),
   };
 
   setExpired();
@@ -117,7 +119,7 @@ async function findAll(req, res) {
 }
 
 async function findAll_admin(req, res) {
-  await setExpired()
+  await setExpired();
   await Project.find()
     .sort({ endDate: -1 })
     .exec()
