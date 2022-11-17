@@ -56,6 +56,39 @@ async function findByText(req, res) {
     });
 }
 
+async function findByName(req, res) {
+  const searchName = req.query.name || "";
+  console.log(searchName);
+
+  const pageOptions = {
+    page: parseInt(req.query.page, 10) || 0,
+    limit: parseInt(req.query.limit, 10) || 6,
+    lastPage: parseInt(
+      (await Project.find({
+        name: { $regex: searchName, $options: "i" },
+        status: { $ne: "Pending" },
+      })
+        .countDocuments()
+        .exec()) / 6
+    ),
+  };
+  
+  await Project.find({
+    name: { $regex: searchName, $options: "i" },
+    status: { $ne: "Pending" },
+  })
+    .sort({ endDate: -1 })
+    .skip(pageOptions.page * pageOptions.limit)
+    .limit(pageOptions.limit)
+    .exec()
+    .then((project) => {
+      return res.json({ msg: "success", pageOptions, project });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
@@ -65,7 +98,7 @@ async function findAll(req, res) {
         await Project.find({ status: { $nin: ["Pending", "Expired"] } })
           .countDocuments()
           .exec()
-      ) / 6,
+       / 6),
   };
 
   setExpired();
@@ -302,6 +335,10 @@ const sortByAscDate = (req, res) => {
 const search = (req, res) => {
   findByText(req, res);
 };
+
+const searchName = (req, res) => {
+  findByName(req, res);
+};
 //REST API POST=================================================
 const createPrj = (req, res) => {
   createOne(req, res);
@@ -336,6 +373,7 @@ module.exports = {
   sortByDescDate,
   sortByAscDate,
   search,
+  searchName,
   approve,
   decline,
   expire,
