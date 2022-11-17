@@ -292,20 +292,17 @@ async function updateOne(req, res) {
 }
 
 async function deleteOne(req, res) {
-  const id = req.body.projectId;
+  const id = req.body.data.projectId;
   console.log(id);
 
   if (!Project.findById(id)) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  // console.log(await Project.findById(id).exec())
-  Project.deleteOne({
-    _id: id,
-  })
+  await Project.findByIdAndDelete(id)
     .exec()
     .then((result) => {
-      return res.status(200).json({ msg: "success", result });
+      return res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);
