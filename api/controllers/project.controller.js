@@ -119,22 +119,13 @@ async function findAll(req, res) {
 }
 
 async function findAll_admin(req, res) {
-  const pageOptions = {
-    page: parseInt(req.query.page, 10) || 0,
-    limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: Math.round(
-      parseInt(await Project.find().countDocuments().exec()) / 6
-    ),
-  };
-
   await setExpired();
 
   await Project.find()
-    .skip(pageOptions.page * pageOptions.limit)
-    .limit(pageOptions.limit)
+    .sort({ startDate: 1 })
     .exec()
     .then((project) => {
-      return res.json({ msg: "success", pageOptions, project });
+      return res.json({ msg: "success", project });
     })
     .catch((err) => {
       console.log(err);
@@ -303,7 +294,6 @@ async function deleteOne(req, res) {
     .exec()
     .then((result) => {
       return res.status(200).json(result);
-
     })
     .catch((err) => {
       console.log(err);
