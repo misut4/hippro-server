@@ -223,6 +223,7 @@ async function createOne(req, res) {
 
 async function approveProject(req, res) {
   const id = req.body.projectId;
+  console.log(id);
   await Project.findByIdAndUpdate(id, {
     status: "Approved",
   })
