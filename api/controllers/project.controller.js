@@ -18,7 +18,7 @@ async function findbyId(req, res) {
 
 async function findByText(req, res) {
   const searchName = req.query.name || "";
-  const searchUni = req.query.uni || "";
+  const searchUni = req.query.university || "";
   const searchLocation = req.query.location || "HCM";
   console.log(searchName);
   console.log(searchUni);
