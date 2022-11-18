@@ -8,6 +8,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/key");
 const passport = require("passport");
+const Project = require("../model/project.model");
 // router.get('/', (req, res) => {
 //     res.send("hello")
 // })
@@ -69,6 +70,7 @@ router.post("/login", async (req, res, next) => {
           savedUser.save()
         }
         const accessToken = jwt.sign({ email: email }, JWT_SECRET);
+        let project = []
         jwt.verify(accessToken, JWT_SECRET, async (err, payload) => {
           if (err) {
             return res.staus(200).json({msg: "you must be logged in", code: 400 });
@@ -80,13 +82,15 @@ router.post("/login", async (req, res, next) => {
             req.user = userdata;
             next();
           });
+          project = await Project.find({ userID: _id }).exec();
           //continue to next middleware
         });
-        res.status(200).json({
+        return res.status(200).json({
           msg: "Login successfully",
           code: 200,
           accessToken,
           data: savedUser,
+          project
         });
       });
   }
