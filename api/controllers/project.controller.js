@@ -26,7 +26,7 @@ async function findByText(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: Math.round(
+    lastPage: Math.ceil(
       parseInt(
         await Project.find({
           // name: { $regex: searchName, $options: "i" },
@@ -65,7 +65,7 @@ async function findByName(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: Math.round(
+    lastPage: Math.ceil(
       parseInt(
         await Project.find({ status: { $nin: ["Pending", "Expired"] } })
           .countDocuments()
@@ -94,7 +94,7 @@ async function findAll(req, res) {
   const pageOptions = {
     page: parseInt(req.query.page, 10) || 0,
     limit: parseInt(req.query.limit, 10) || 6,
-    lastPage: Math.round(
+    lastPage: Math.ceil(
       parseInt(
         await Project.find({ status: { $nin: ["Pending", "Expired"] } })
           .countDocuments()
@@ -104,6 +104,12 @@ async function findAll(req, res) {
   };
 
   await setExpired();
+
+  console.log(
+    await Project.find({ status: { $nin: ["Pending", "Expired"] } })
+      .countDocuments()
+      .exec()
+  );
 
   await Project.find({ status: { $nin: ["Pending", "Expired"] } })
     .sort({ endDate: -1 })
@@ -298,7 +304,7 @@ async function updateOne(req, res) {
 }
 
 async function deleteOne(req, res) {
-  const id = req.body.data.projectId;
+  const id = req.body.projectId;
   console.log(id);
 
   if (!Project.findById(id)) {
