@@ -162,17 +162,17 @@ async function acceptOne(req, res) {
 
   // const project = await Project.findByIdAndUpdate(projectId, {participants: user.name}).exec()
 
-  //find sender and receiver
-  const fromUser = await User.findById(applicantId).exec();
-  const rcId = await Project.findById(projectId).select("userID").exec();
-  const rcUser = await User.findById(rcId).exec();
+  // //find sender and receiver
+  // const fromUser = await User.findById(applicantId).exec();
+  // const rcId = await Project.findById(projectId).select("userID").exec();
+  // const rcUser = await User.findById(rcId).exec();
 
-  //push noti to prj's owner
-  const noti = new Noti({
-    content: `${rcUser.email} has accepted your an application`,
-    fromUser: fromUser,
-    rcUser: rcUser,
-  });
+  // //push noti to prj's owner
+  // const noti = new Noti({
+  //   content: `${rcUser.email} has accepted your an application`,
+  //   fromUser: fromUser,
+  //   rcUser: rcUser,
+  // });
 
   return res.status(200).json(await Application.findById(applicationId));
 }
@@ -187,17 +187,17 @@ async function rejectOne(req, res) {
     return res.status(200).json({ msg: "id not found", code: 400 });
   }
 
-  //find sender and receiver
-  const fromUser = await User.findById(applicantId).exec();
-  const rcId = await Project.findById(projectId).select("userID").exec();
-  const rcUser = await User.findById(rcId).exec();
+  // //find sender and receiver
+  // const fromUser = await User.findById(applicantId).exec();
+  // const rcId = await Project.findById(projectId).select("userID").exec();
+  // const rcUser = await User.findById(rcId).exec();
 
-  //push noti to prj's owner
-  const noti = new Noti({
-    content: `${rcUser} has accepted your an application`,
-    fromUser: fromUser,
-    rcUser: rcUser,
-  });
+  // //push noti to prj's owner
+  // const noti = new Noti({
+  //   content: `${rcUser} has accepted your an application`,
+  //   fromUser: fromUser,
+  //   rcUser: rcUser,
+  // });
 
   //update/remove user's application from project
   await Project.findById(projectId)
